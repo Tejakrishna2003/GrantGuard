@@ -176,6 +176,7 @@ class CampaignResponse(BaseModel):
     disbursed_amount: float
     protected_fraud_amount: float
     status: str
+    image_url: Optional[str] = None
     created_at: datetime
 
     class Config:

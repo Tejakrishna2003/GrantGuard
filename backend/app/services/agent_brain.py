@@ -116,28 +116,44 @@ class AgentBrain:
             yield await emit(3, "ALERT", "Beneficiary OTP sign-off has NOT been completed. Ground truth missing.")
             yield await emit(4, "DECIDE", "VERDICT: ESCROW HOLD — Milestone locked until beneficiary signs delivery proof.")
 
-            # Record Ledger Entry
-            tx_id = f"TX-{uuid.uuid4().hex[:8].upper()}"
-            ledger_entry = LedgerTransaction(
-                id=tx_id,
-                claim_id=claim.id,
-                campaign_title=campaign_title,
-                milestone_title=milestone_title,
-                vendor_name=claim.vendor_name,
-                billed_amount=total_invoiced,
-                market_ref_amount=market_ref_total,
-                confirmed_amount=0.0,
-                variance_amount=total_invoiced,
-                inflation_pct=overall_inflation_pct,
-                status="PENDING",
-                ai_summary="Milestone awaiting field beneficiary OTP sign-off. Payout held in escrow.",
-                flag_reasons=["Awaiting Beneficiary OTP verification"],
-                paypal_batch_status="HELD",
-                created_at=datetime.utcnow()
-            )
-            db.add(ledger_entry)
+            # Check if ledger entry already exists for this claim to prevent duplicates
+            existing_tx = db.query(LedgerTransaction).filter(LedgerTransaction.claim_id == claim.id).first()
+            if existing_tx:
+                ledger_entry = existing_tx
+                tx_id = ledger_entry.id
+                ledger_entry.billed_amount = total_invoiced
+                ledger_entry.market_ref_amount = market_ref_total
+                ledger_entry.confirmed_amount = 0.0
+                ledger_entry.variance_amount = total_invoiced
+                ledger_entry.inflation_pct = overall_inflation_pct
+                ledger_entry.status = "PENDING"
+                ledger_entry.ai_summary = "Milestone awaiting field beneficiary OTP sign-off. Payout held in escrow."
+                ledger_entry.flag_reasons = ["Awaiting Beneficiary OTP verification"]
+                ledger_entry.paypal_batch_status = "HELD"
+            else:
+                tx_id = f"TX-{uuid.uuid4().hex[:8].upper()}"
+                ledger_entry = LedgerTransaction(
+                    id=tx_id,
+                    claim_id=claim.id,
+                    campaign_title=campaign_title,
+                    milestone_title=milestone_title,
+                    vendor_name=claim.vendor_name,
+                    billed_amount=total_invoiced,
+                    market_ref_amount=market_ref_total,
+                    confirmed_amount=0.0,
+                    variance_amount=total_invoiced,
+                    inflation_pct=overall_inflation_pct,
+                    status="PENDING",
+                    ai_summary="Milestone awaiting field beneficiary OTP sign-off. Payout held in escrow.",
+                    flag_reasons=["Awaiting Beneficiary OTP verification"],
+                    paypal_batch_status="HELD",
+                    created_at=datetime.utcnow()
+                )
+                db.add(ledger_entry)
+
             milestone.status = "PENDING_CLAIM"
             claim.status = "PENDING_VERIFICATION"
+            db.commit()
             db.commit()
 
             yield await emit(5, "ACTION", f"Committed transaction {tx_id} to AG Grid as PENDING. Milestone frozen in escrow.")
@@ -198,25 +214,39 @@ class AgentBrain:
                 campaign.protected_fraud_amount += total_diverted
                 db.commit()
 
-            # Record Ledger Entry as FLAGGED
-            ledger_entry = LedgerTransaction(
-                id=tx_id,
-                claim_id=claim.id,
-                campaign_title=campaign_title,
-                milestone_title=milestone_title,
-                vendor_name=claim.vendor_name,
-                billed_amount=total_invoiced,
-                market_ref_amount=market_ref_total,
-                confirmed_amount=confirmed_val,
-                variance_amount=total_diverted,
-                inflation_pct=overall_inflation_pct,
-                status="FLAGGED",
-                ai_summary=ai_summary,
-                flag_reasons=summary_reasons,
-                paypal_batch_status="HELD",
-                created_at=datetime.utcnow()
-            )
-            db.add(ledger_entry)
+            # Record or update Ledger Entry as FLAGGED
+            existing_tx = db.query(LedgerTransaction).filter(LedgerTransaction.claim_id == claim.id).first()
+            if existing_tx:
+                ledger_entry = existing_tx
+                tx_id = ledger_entry.id
+                ledger_entry.billed_amount = total_invoiced
+                ledger_entry.market_ref_amount = market_ref_total
+                ledger_entry.confirmed_amount = confirmed_val
+                ledger_entry.variance_amount = total_diverted
+                ledger_entry.inflation_pct = overall_inflation_pct
+                ledger_entry.status = "FLAGGED"
+                ledger_entry.ai_summary = ai_summary
+                ledger_entry.flag_reasons = summary_reasons
+                ledger_entry.paypal_batch_status = "HELD"
+            else:
+                ledger_entry = LedgerTransaction(
+                    id=tx_id,
+                    claim_id=claim.id,
+                    campaign_title=campaign_title,
+                    milestone_title=milestone_title,
+                    vendor_name=claim.vendor_name,
+                    billed_amount=total_invoiced,
+                    market_ref_amount=market_ref_total,
+                    confirmed_amount=confirmed_val,
+                    variance_amount=total_diverted,
+                    inflation_pct=overall_inflation_pct,
+                    status="FLAGGED",
+                    ai_summary=ai_summary,
+                    flag_reasons=summary_reasons,
+                    paypal_batch_status="HELD",
+                    created_at=datetime.utcnow()
+                )
+                db.add(ledger_entry)
             db.commit()
 
             yield await emit(5, "ACTION", f"Milestone payout locked. Discrepancy logged to AG Grid as FLAGGED. Protected ${total_diverted:.2f} donor capital.")
@@ -243,25 +273,41 @@ class AgentBrain:
                 campaign.disbursed_amount += total_invoiced
                 db.commit()
 
-            ledger_entry = LedgerTransaction(
-                id=tx_id,
-                claim_id=claim.id,
-                campaign_title=campaign_title,
-                milestone_title=milestone_title,
-                vendor_name=claim.vendor_name,
-                billed_amount=total_invoiced,
-                market_ref_amount=market_ref_total,
-                confirmed_amount=confirmed_val,
-                variance_amount=0.0,
-                inflation_pct=0.0,
-                status="RECONCILED",
-                ai_summary=ai_summary,
-                flag_reasons=[],
-                paypal_payout_id=payout_id,
-                paypal_batch_status="SUCCESS",
-                created_at=datetime.utcnow()
-            )
-            db.add(ledger_entry)
+            # Record or update Ledger Entry as RECONCILED
+            existing_tx = db.query(LedgerTransaction).filter(LedgerTransaction.claim_id == claim.id).first()
+            if existing_tx:
+                ledger_entry = existing_tx
+                tx_id = ledger_entry.id
+                ledger_entry.billed_amount = total_invoiced
+                ledger_entry.market_ref_amount = market_ref_total
+                ledger_entry.confirmed_amount = confirmed_val
+                ledger_entry.variance_amount = 0.0
+                ledger_entry.inflation_pct = 0.0
+                ledger_entry.status = "RECONCILED"
+                ledger_entry.ai_summary = ai_summary
+                ledger_entry.flag_reasons = []
+                ledger_entry.paypal_payout_id = payout_id
+                ledger_entry.paypal_batch_status = "SUCCESS"
+            else:
+                ledger_entry = LedgerTransaction(
+                    id=tx_id,
+                    claim_id=claim.id,
+                    campaign_title=campaign_title,
+                    milestone_title=milestone_title,
+                    vendor_name=claim.vendor_name,
+                    billed_amount=total_invoiced,
+                    market_ref_amount=market_ref_total,
+                    confirmed_amount=confirmed_val,
+                    variance_amount=0.0,
+                    inflation_pct=0.0,
+                    status="RECONCILED",
+                    ai_summary=ai_summary,
+                    flag_reasons=[],
+                    paypal_payout_id=payout_id,
+                    paypal_batch_status="SUCCESS",
+                    created_at=datetime.utcnow()
+                )
+                db.add(ledger_entry)
             db.commit()
 
             yield await emit(5, "ACTION", f"Autonomous PayPal Payout executed (Batch: {payout_id}). Funds released to {claim.vendor_paypal_email}. AG Grid updated to RECONCILED.")

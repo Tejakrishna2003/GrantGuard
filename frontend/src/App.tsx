@@ -10,7 +10,7 @@ import { SubmitClaimModal } from './components/SubmitClaimModal';
 import { VerifyProofModal } from './components/VerifyProofModal';
 import { DisputeModal } from './components/DisputeModal';
 import { Campaign, LedgerTransaction, GlobalMetrics, AgentThought } from './lib/types';
-import { api } from './lib/api';
+import { api, API_BASE } from './lib/api';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('ledger');
@@ -55,7 +55,7 @@ export const App: React.FC = () => {
     setAgentLogs([]);
     setActiveTab('ledger'); // switch to ledger tab so judge sees AG Grid and terminal
 
-    const eventSource = new EventSource(`/api/agent/stream/${claimId}`);
+    const eventSource = new EventSource(`${API_BASE}/agent/stream/${claimId}`);
 
     eventSource.onmessage = (event) => {
       try {
@@ -193,7 +193,12 @@ export const App: React.FC = () => {
           onClose={() => setVerifyCampaign(null)}
           onSuccess={() => {
             setVerifyCampaign(null);
-            const claimId = verifyCampaign.id === 'CAMP-FLOOD-01' ? 'CLM-FLOOD-01' : 'CLM-WATER-02';
+            const claimMap: Record<string, string> = {
+              'CAMP-FLOOD-01': 'CLM-FLOOD-01',
+              'CAMP-WATER-02': 'CLM-WATER-02',
+              'CAMP-TECH-03': 'CLM-TECH-03'
+            };
+            const claimId = claimMap[verifyCampaign.id] || verifyCampaign.id.replace('CAMP-', 'CLM-');
             triggerAgentReconciliation(claimId);
           }}
         />

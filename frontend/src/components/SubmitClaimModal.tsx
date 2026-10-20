@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Upload, CheckCircle, FileText } from 'lucide-react';
 import { Campaign } from '../lib/types';
 import { api } from '../lib/api';
@@ -20,13 +20,43 @@ export const SubmitClaimModal: React.FC<SubmitClaimModalProps> = ({
   const [invoiceAmount, setInvoiceAmount] = useState<number>(1000);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const [selectedMilestoneId, setSelectedMilestoneId] = useState<string>('');
+  const [milestones, setMilestones] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Default fallback mapping
+    const milestoneMap: Record<string, string> = {
+      'CAMP-FLOOD-01': 'MS-FLOOD-01',
+      'CAMP-WATER-02': 'MS-WATER-02',
+      'CAMP-TECH-03': 'MS-TECH-03'
+    };
+    setSelectedMilestoneId(milestoneMap[campaign.id] || campaign.id.replace('CAMP-', 'MS-'));
+
+    // Fetch live milestones for this campaign
+    api.getCampaignDetail(campaign.id)
+      .then(res => {
+        if (res.milestones && res.milestones.length > 0) {
+          setMilestones(res.milestones);
+          setSelectedMilestoneId(res.milestones[0].id);
+        }
+      })
+      .catch(err => console.error(err));
+  }, [campaign.id]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      const milestoneMap: Record<string, string> = {
+        'CAMP-FLOOD-01': 'MS-FLOOD-01',
+        'CAMP-WATER-02': 'MS-WATER-02',
+        'CAMP-TECH-03': 'MS-TECH-03'
+      };
+      const targetMilestone = selectedMilestoneId || milestoneMap[campaign.id] || campaign.id.replace('CAMP-', 'MS-');
+
       const formData = new FormData();
-      formData.append('milestone_id', `MS-${campaign.id.substring(5, 10)}-01`);
+      formData.append('milestone_id', targetMilestone);
       formData.append('vendor_name', vendorName);
       formData.append('vendor_paypal_email', vendorEmail);
       formData.append('invoice_number', invoiceNumber);

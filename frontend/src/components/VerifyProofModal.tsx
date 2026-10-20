@@ -42,16 +42,39 @@ export const VerifyProofModal: React.FC<VerifyProofModalProps> = ({
     setLoading(true);
 
     try {
+      let claimId = 'CLM-FLOOD-01';
+      let beneficiaryName = 'Elena Rostova (District Volunteer Lead)';
+      let confirmedItems: any[] = [{ item: 'White Rice (5kg Bag)', quantity: 50, received: true }];
+      let confirmedValue = 625.00;
+      let photoUrl = 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80';
+
+      if (campaign.id === 'CAMP-WATER-02') {
+        claimId = 'CLM-WATER-02';
+        beneficiaryName = 'Marcus Vance (Community Council Chair)';
+        confirmedItems = [
+          { item: 'Submersible Clean Water Pump (1 HP)', quantity: 1, received: true },
+          { item: 'High-Pressure PVC Well Piping Kit (100m)', quantity: 1, received: true }
+        ];
+        confirmedValue = 1200.00;
+        photoUrl = 'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=600&q=80';
+      } else if (campaign.id === 'CAMP-TECH-03') {
+        claimId = 'CLM-TECH-03';
+        beneficiaryName = 'Principal David Chen (Oakridge Community School)';
+        confirmedItems = [
+          { item: 'Education-Grade Chromebook Laptop (11.6")', quantity: 10, received: true }
+        ];
+        confirmedValue = 3000.00;
+        photoUrl = 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80';
+      }
+
       await api.verifyProof({
-        claim_id: campaign.id === 'CAMP-FLOOD-01' ? 'CLM-FLOOD-01' : 'CLM-WATER-02',
-        beneficiary_name: 'Elena Rostova (District Volunteer Lead)',
+        claim_id: claimId,
+        beneficiary_name: beneficiaryName,
         beneficiary_phone: phone,
         otp_code: code,
-        confirmed_items: [
-          { item: 'White Rice (5kg Bag)', quantity: 50, received: true }
-        ],
-        confirmed_value: 625.00,
-        delivery_photo_url: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80'
+        confirmed_items: confirmedItems,
+        confirmed_value: confirmedValue,
+        delivery_photo_url: photoUrl
       });
       setStep('confirmed');
       setTimeout(() => {
