@@ -22,6 +22,7 @@ def get_ledger_transactions(db: Session = Depends(get_db)):
     return db.query(LedgerTransaction).order_by(LedgerTransaction.created_at.desc()).all()
 
 @router.get("/detail/{transaction_id}")
+@router.get("/{transaction_id}")
 def get_transaction_inspection_detail(transaction_id: str, db: Session = Depends(get_db)):
     """
     Returns side-by-side inspection data for MasterDetailDrawer.tsx.
