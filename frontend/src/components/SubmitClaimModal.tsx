@@ -75,29 +75,29 @@ export const SubmitClaimModal: React.FC<SubmitClaimModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-      <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-lg p-6 sm:p-8 shadow-2xl relative">
+      <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-lg p-7 sm:p-8 shadow-2xl relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900"
+          className="absolute top-5 right-5 p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center space-x-2 text-sky-700 mb-2">
+        <div className="flex items-center space-x-2 text-sky-700 mb-2.5">
           <FileText className="w-5 h-5" />
           <span className="text-xs font-bold uppercase tracking-wider">Vendor Milestone Claim</span>
         </div>
 
-        <h3 className="text-xl font-bold text-slate-900">
+        <h3 className="text-2xl font-black text-slate-900">
           Submit Invoice for {campaign.title}
         </h3>
-        <p className="text-xs text-slate-600 mt-1">
+        <p className="text-sm text-slate-600 mt-1 leading-relaxed">
           The Autonomous AI agent will extract line items via Gemini Vision and cross-check prices against WFP indexes.
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4 my-6">
+        <form onSubmit={handleSubmit} className="space-y-4.5 my-6">
           <div>
-            <label className="text-xs text-slate-700 font-semibold block mb-1">
+            <label className="text-sm text-slate-800 font-bold block mb-1.5">
               Contractor / Vendor Business Name
             </label>
             <input
@@ -105,12 +105,12 @@ export const SubmitClaimModal: React.FC<SubmitClaimModalProps> = ({
               required
               value={vendorName}
               onChange={(e) => setVendorName(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-slate-400"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-slate-400 font-medium"
             />
           </div>
 
           <div>
-            <label className="text-xs text-slate-700 font-semibold block mb-1">
+            <label className="text-sm text-slate-800 font-bold block mb-1.5">
               Vendor PayPal Payout Email (Sandbox Recipient)
             </label>
             <input
@@ -118,13 +118,13 @@ export const SubmitClaimModal: React.FC<SubmitClaimModalProps> = ({
               required
               value={vendorEmail}
               onChange={(e) => setVendorEmail(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-slate-400 font-mono font-bold"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-slate-400 font-mono font-bold"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3.5">
             <div>
-              <label className="text-xs text-slate-700 font-semibold block mb-1">
+              <label className="text-sm text-slate-800 font-bold block mb-1.5">
                 Invoice Number
               </label>
               <input
@@ -132,11 +132,11 @@ export const SubmitClaimModal: React.FC<SubmitClaimModalProps> = ({
                 required
                 value={invoiceNumber}
                 onChange={(e) => setInvoiceNumber(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-slate-400 font-mono font-bold"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-slate-400 font-mono font-bold"
               />
             </div>
             <div>
-              <label className="text-xs text-slate-700 font-semibold block mb-1">
+              <label className="text-sm text-slate-800 font-bold block mb-1.5">
                 Total Billed Amount ($)
               </label>
               <input
@@ -144,14 +144,14 @@ export const SubmitClaimModal: React.FC<SubmitClaimModalProps> = ({
                 required
                 value={invoiceAmount}
                 onChange={(e) => setInvoiceAmount(parseFloat(e.target.value))}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-slate-400 font-mono font-bold"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-slate-400 font-mono font-bold"
               />
             </div>
           </div>
 
           {/* Upload Dropzone */}
           <div>
-            <label className="text-xs text-slate-700 font-semibold block mb-1">
+            <label className="text-sm text-slate-800 font-bold block mb-1.5">
               Upload Invoice Receipt (PDF or Image)
             </label>
             <input
@@ -167,28 +167,28 @@ export const SubmitClaimModal: React.FC<SubmitClaimModalProps> = ({
             />
             <div
               onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
+              className={`border-2 border-dashed rounded-2xl p-5 text-center cursor-pointer transition-all ${
                 selectedFile
                   ? 'border-emerald-500 bg-emerald-50'
                   : 'border-slate-300 hover:border-slate-400 bg-slate-50'
               }`}
             >
-              <Upload className={`w-6 h-6 mx-auto mb-1 ${selectedFile ? 'text-emerald-600' : 'text-slate-400'}`} />
+              <Upload className={`w-7 h-7 mx-auto mb-1.5 ${selectedFile ? 'text-emerald-600' : 'text-slate-400'}`} />
               {selectedFile ? (
                 <div>
-                  <span className="text-xs text-emerald-800 font-bold block">
+                  <span className="text-sm text-emerald-800 font-bold block">
                     ✓ {selectedFile.name}
                   </span>
-                  <span className="text-[10px] text-slate-500">
+                  <span className="text-xs text-slate-500 font-medium mt-0.5 block">
                     {(selectedFile.size / 1024).toFixed(1)} KB • Click to replace file
                   </span>
                 </div>
               ) : (
                 <div>
-                  <span className="text-xs text-slate-700 font-medium block">
+                  <span className="text-sm text-slate-800 font-semibold block">
                     Click to select invoice file
                   </span>
-                  <span className="text-[10px] text-slate-500">
+                  <span className="text-xs text-slate-500 font-medium mt-0.5 block">
                     Supports PDF, PNG, JPG (Or leave empty to use sample invoice)
                   </span>
                 </div>
@@ -199,7 +199,7 @@ export const SubmitClaimModal: React.FC<SubmitClaimModalProps> = ({
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center justify-center space-x-1.5"
+            className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2"
           >
             <span>{loading ? 'Submitting & Indexing...' : 'Submit Claim to Autonomous Escrow'}</span>
           </button>

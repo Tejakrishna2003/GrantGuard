@@ -7,6 +7,7 @@
 
 :root {
   color-scheme: light;
+  font-size: 16px;
 }
 
 body {
@@ -14,6 +15,8 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: #f8fafc;
   color: #0f172a;
+  font-size: 15px;
+  line-height: 1.5;
   background-image: 
     radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.04) 0px, transparent 50%),
     radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.03) 0px, transparent 50%),
@@ -38,18 +41,20 @@ code, pre, .font-mono {
   box-shadow: 0 4px 20px -2px rgba(14, 165, 233, 0.08);
 }
 
-/* Custom AG Grid Clean Light Theme */
+/* Custom AG Grid Clean Light Theme with Larger, High-Legibility Typography */
 .ag-theme-alpine {
   --ag-background-color: #ffffff;
   --ag-header-background-color: #f8fafc;
   --ag-odd-row-background-color: #ffffff;
   --ag-even-row-background-color: #f8fafc;
   --ag-border-color: #e2e8f0;
-  --ag-header-foreground-color: #475569;
+  --ag-header-foreground-color: #334155;
   --ag-foreground-color: #0f172a;
   --ag-row-hover-color: #f1f5f9;
   --ag-selected-row-background-color: #e0f2fe;
-  --ag-font-size: 13px;
+  --ag-font-size: 14px;
+  --ag-header-height: 44px;
+  --ag-row-height: 50px;
   font-family: 'Inter', sans-serif;
   border-radius: 0.75rem;
   overflow: hidden;
@@ -58,19 +63,25 @@ code, pre, .font-mono {
 
 .ag-theme-alpine .ag-header-cell-label {
   font-weight: 700;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #475569;
+  color: #334155;
 }
 
 .ag-theme-alpine .ag-row {
   transition: background-color 0.15s ease, border-color 0.15s ease;
+  font-size: 14px;
+}
+
+.ag-theme-alpine .ag-cell {
+  display: flex;
+  align-items: center;
 }
 
 /* Live Cell Flashing Animations */
 .ag-theme-alpine .ag-cell-data-changed {
-  background-color: rgba(254, 240, 138, 0.6) !important;
+  background-color: rgba(254, 240, 138, 0.7) !important;
   transition: background-color 1.5s ease;
 }
 
@@ -91,8 +102,8 @@ code, pre, .font-mono {
 
 /* Custom Light Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
   background: #f1f5f9;
