@@ -333,6 +333,13 @@ export const AuditedLedgerGrid: React.FC<AuditedLedgerGridProps> = ({
           animateRows={true}
           pagination={true}
           paginationPageSize={10}
+          onGridReady={(params) => {
+            try {
+              params.api.sizeColumnsToFit();
+            } catch (e) {
+              // fallback
+            }
+          }}
         />
       </div>
     </div>
