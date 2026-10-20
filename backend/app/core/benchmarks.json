@@ -1,0 +1,105 @@
+{
+  "description": "UN World Food Programme (WFP) & HDX Global Emergency Commodity Reference Index (2024-2026)",
+  "currency": "USD",
+  "commodities": [
+    {
+      "sku": "staple-rice-5kg",
+      "canonical_name": "Rice (5kg Bag)",
+      "aliases": ["rice", "white rice", "5kg rice", "rice bag", "rice 5kg bag"],
+      "category": "Food Staples",
+      "unit": "bag",
+      "median_price": 8.00,
+      "min_price": 6.50,
+      "max_price": 9.50,
+      "source": "WFP Market Monitor HDX-2024"
+    },
+    {
+      "sku": "staple-flour-10kg",
+      "canonical_name": "Wheat Flour (10kg Bag)",
+      "aliases": ["wheat flour", "flour", "atta", "flour bag", "10kg flour"],
+      "category": "Food Staples",
+      "unit": "bag",
+      "median_price": 11.50,
+      "min_price": 9.50,
+      "max_price": 13.00,
+      "source": "WFP Market Monitor HDX-2024"
+    },
+    {
+      "sku": "staple-cooking-oil-2l",
+      "canonical_name": "Vegetable Cooking Oil (2L)",
+      "aliases": ["cooking oil", "vegetable oil", "oil 2l", "sunflower oil"],
+      "category": "Food Staples",
+      "unit": "bottle",
+      "median_price": 5.20,
+      "min_price": 4.50,
+      "max_price": 6.00,
+      "source": "WFP Market Monitor HDX-2024"
+    },
+    {
+      "sku": "nfi-blanket-thermal",
+      "canonical_name": "High Thermal Winter Blanket",
+      "aliases": ["blanket", "thermal blanket", "winter blanket", "fleece blanket", "emergency blanket"],
+      "category": "Shelter & NFI",
+      "unit": "piece",
+      "median_price": 15.00,
+      "min_price": 12.00,
+      "max_price": 18.00,
+      "source": "UNHCR / IFRC Standard Non-Food Items"
+    },
+    {
+      "sku": "nfi-tarp-tarpaulin",
+      "canonical_name": "Reinforced Plastic Tarpaulin (4x5m)",
+      "aliases": ["tarpaulin", "tarp", "plastic sheet", "shelter kit"],
+      "category": "Shelter & NFI",
+      "unit": "piece",
+      "median_price": 22.00,
+      "min_price": 18.00,
+      "max_price": 26.00,
+      "source": "UNHCR Emergency Shelter Standards"
+    },
+    {
+      "sku": "infra-water-pump-submersible",
+      "canonical_name": "Submersible Clean Water Pump (1 HP)",
+      "aliases": ["submersible pump", "water pump", "well pump", "1hp pump", "borewell pump"],
+      "category": "WASH Infrastructure",
+      "unit": "unit",
+      "median_price": 800.00,
+      "min_price": 750.00,
+      "max_price": 900.00,
+      "source": "UNICEF WASH Procurement Database"
+    },
+    {
+      "sku": "infra-pvc-piping-kit",
+      "canonical_name": "High-Pressure PVC Well Piping Kit (100m)",
+      "aliases": ["pvc pipe", "well piping", "piping kit", "water pipes"],
+      "category": "WASH Infrastructure",
+      "unit": "kit",
+      "median_price": 400.00,
+      "min_price": 360.00,
+      "max_price": 440.00,
+      "source": "UNICEF WASH Procurement Database"
+    },
+    {
+      "sku": "edu-chromebook-laptop",
+      "canonical_name": "Education-Grade Chromebook Laptop (11.6\")",
+      "aliases": ["chromebook", "laptop", "student laptop", "educational laptop"],
+      "category": "Education Technology",
+      "unit": "unit",
+      "median_price": 300.00,
+      "min_price": 270.00,
+      "max_price": 330.00,
+      "source": "Global Education Procurement Benchmark"
+    },
+    {
+      "sku": "med-first-aid-trauma-kit",
+      "canonical_name": "Community Trauma & First Aid Kit",
+      "aliases": ["first aid kit", "medical kit", "trauma kit", "emergency medical kit"],
+      "category": "Health & Medical",
+      "unit": "kit",
+      "median_price": 65.00,
+      "min_price": 55.00,
+      "max_price": 75.00,
+      "source": "WHO Emergency Health Kit Catalog"
+    }
+  ]
+}

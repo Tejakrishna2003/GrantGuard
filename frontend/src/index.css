@@ -1,0 +1,68 @@
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #090d16;
+  color: #f1f5f9;
+}
+
+code, pre {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Custom AG Grid Dark Aesthetic */
+.ag-theme-alpine-dark {
+  --ag-background-color: #0f172a;
+  --ag-header-background-color: #1e293b;
+  --ag-odd-row-background-color: #0f172a;
+  --ag-even-row-background-color: #141f36;
+  --ag-border-color: #334155;
+  --ag-header-foreground-color: #94a3b8;
+  --ag-foreground-color: #f8fafc;
+  --ag-row-hover-color: #1e293b;
+  --ag-selected-row-background-color: rgba(14, 165, 233, 0.15);
+  font-family: 'Inter', sans-serif;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid #334155;
+}
+
+.ag-theme-alpine-dark .ag-header-cell-label {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Live Cell Flashing Animations */
+.ag-theme-alpine-dark .ag-cell-data-changed {
+  background-color: rgba(234, 179, 8, 0.4) !important;
+  transition: background-color 1.5s ease;
+}
+
+.ag-theme-alpine-dark .ag-cell-data-changed-animation {
+  background-color: transparent !important;
+  transition: background-color 1.5s ease;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}

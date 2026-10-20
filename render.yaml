@@ -1,0 +1,27 @@
+services:
+  # Backend FastAPI Web Service
+  - type: web
+    name: grantpool-backend
+    env: python
+    buildCommand: "cd backend && pip install -r requirements.txt"
+    startCommand: "cd backend && python seed.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DEMO_MODE
+        value: "true"
+      - key: PAYPAL_MODE
+        value: sandbox
+
+  # Frontend React Vite Static Site
+  - type: web
+    name: grantpool-frontend
+    env: static
+    buildCommand: "cd frontend && npm install && npm run build"
+    staticPublishPath: "./frontend/dist"
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: grantpool-backend
+          property: host
