@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { KPICards } from './components/KPICards';
+import { HowItWorksStrip } from './components/HowItWorksStrip';
 import { AuditedLedgerGrid } from './components/AuditedLedgerGrid';
 import { AgentReasoningBox } from './components/AgentReasoningBox';
 import { FundingProgressChart } from './components/FundingProgressChart';
@@ -9,6 +10,7 @@ import { MasterDetailDrawer } from './components/MasterDetailDrawer';
 import { SubmitClaimModal } from './components/SubmitClaimModal';
 import { VerifyProofModal } from './components/VerifyProofModal';
 import { DisputeModal } from './components/DisputeModal';
+import { ToastContainer, ToastNotification } from './components/ToastContainer';
 import { Campaign, LedgerTransaction, GlobalMetrics, AgentThought } from './lib/types';
 import { api, API_BASE } from './lib/api';
 
@@ -19,6 +21,10 @@ export const App: React.FC = () => {
   const [metrics, setMetrics] = useState<GlobalMetrics | null>(null);
   const [systemStatus, setSystemStatus] = useState<any>(null);
   const [backendConnected, setBackendConnected] = useState<boolean>(true);
+  const [isResetting, setIsResetting] = useState<boolean>(false);
+
+  // Policy Tolerance Mode: NORMAL (10%) or CRISIS (35%)
+  const [toleranceMode, setToleranceMode] = useState<'NORMAL' | 'CRISIS'>('NORMAL');
 
   // Modals & Drawers
   const [selectedTx, setSelectedTx] = useState<LedgerTransaction | null>(null);
@@ -30,6 +36,22 @@ export const App: React.FC = () => {
   const [agentLogs, setAgentLogs] = useState<AgentThought[]>([]);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
   const [activeClaimId, setActiveClaimId] = useState<string | undefined>(undefined);
+  const [activePipelineStep, setActivePipelineStep] = useState<number | undefined>(undefined);
+
+  // Toast Notifications
+  const [toasts, setToasts] = useState<ToastNotification[]>([]);
+
+  const addToast = (toast: Omit<ToastNotification, 'id'>) => {
+    const id = `toast-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    setToasts((prev) => [...prev, { ...toast, id }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 6000);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
 
   const loadData = async () => {
     try {
@@ -50,6 +72,26 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleResetDatabase = async () => {
+    setIsResetting(true);
+    try {
+      await api.resetDatabase();
+      await loadData();
+      setAgentLogs([]);
+      setActiveClaimId(undefined);
+      setActivePipelineStep(undefined);
+      addToast({
+        type: 'INFO',
+        title: 'Demo State Reset',
+        message: 'SQLite database reset to clean 3 initial pre-seeded scenarios.'
+      });
+    } catch (e) {
+      console.error('Reset failed:', e);
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
   useEffect(() => {
     loadData();
   }, []);
@@ -61,7 +103,8 @@ export const App: React.FC = () => {
     setAgentLogs([]);
     setActiveTab('ledger'); // switch to ledger tab so judge sees AG Grid and terminal
 
-    const eventSource = new EventSource(`${API_BASE}/agent/stream/${claimId}`);
+    const toleranceParam = toleranceMode === 'CRISIS' ? 35.0 : 10.0;
+    const eventSource = new EventSource(`${API_BASE}/agent/stream/${claimId}?tolerance=${toleranceParam}`);
 
     eventSource.onmessage = (event) => {
       try {
@@ -70,7 +113,24 @@ export const App: React.FC = () => {
           setIsStreaming(false);
           eventSource.close();
           loadData(); // refresh AG Grid and KPIs
+
+          // Trigger toast notification
+          if (data.status === 'RECONCILED') {
+            addToast({
+              type: 'PAYPAL_PAYOUT',
+              title: 'Autonomous PayPal Payout Executed',
+              message: `Milestone verified 100%. Payout batch released.`,
+              batchId: data.payout_id || 'GP-PAYOUT-8902B1'
+            });
+          } else if (data.status === 'FLAGGED') {
+            addToast({
+              type: 'FRAUD_HALT',
+              title: 'Payout Halted & Capital Frozen',
+              message: `AI detected price inflation or short delivery. Protected $${data.protected || 600} in escrow.`
+            });
+          }
         } else {
+          setActivePipelineStep(data.step);
           setAgentLogs((prev) => [
             ...prev,
             {
@@ -111,12 +171,14 @@ export const App: React.FC = () => {
         onRefresh={loadData}
         onTriggerScenario={triggerAgentReconciliation}
         isStreaming={isStreaming}
-        systemStatus={systemStatus}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* KPI Cards (Always visible for high-level visibility) */}
         <KPICards metrics={metrics} />
+
+        {/* 🌟 NEW: Interactive 4-Way Reconciliation Architecture Flow Strip 🌟 */}
+        <HowItWorksStrip activeStep={activePipelineStep} />
 
         {/* Live Autonomous Agent Reasoning Stream Terminal */}
         <AgentReasoningBox
@@ -145,6 +207,9 @@ export const App: React.FC = () => {
           </div>
         )}
       </main>
+
+      {/* Floating Toast Notification Container */}
+      <ToastContainer toasts={toasts} onDismiss={removeToast} />
 
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-600">

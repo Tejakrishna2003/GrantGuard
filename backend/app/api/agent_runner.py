@@ -7,16 +7,17 @@ from app.services.agent_brain import agent_brain
 router = APIRouter(prefix="/api/agent", tags=["agent"])
 
 @router.get("/stream/{claim_id}")
-async def stream_agent_reconciliation(claim_id: str):
+async def stream_agent_reconciliation(claim_id: str, tolerance: float = None):
     """
     Server-Sent Events (SSE) endpoint.
     Streams the live 5-stage cognitive reasoning trace to the UI terminal.
+    Accepts optional dynamic tolerance threshold (e.g. 10.0 for standard, 35.0 for emergency).
     """
     db = SessionLocal()
 
     async def event_generator():
         try:
-            async for sse_event in agent_brain.run_reconciliation(claim_id, db):
+            async for sse_event in agent_brain.run_reconciliation(claim_id, db, tolerance_pct=tolerance):
                 yield sse_event
         finally:
             db.close()

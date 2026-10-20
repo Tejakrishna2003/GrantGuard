@@ -21,12 +21,14 @@ class AgentBrain:
     async def run_reconciliation(
         self,
         claim_id: str,
-        db: Session
+        db: Session,
+        tolerance_pct: float = None
     ) -> AsyncGenerator[str, None]:
         """
         Executes the 5-step autonomous reconciliation loop.
         Yields Server-Sent Events (SSE) formatted strings to the frontend.
         """
+        active_tolerance = tolerance_pct if tolerance_pct is not None else settings.DEFAULT_TOLERANCE_PERCENT
         claim = db.query(Claim).filter(Claim.id == claim_id).first()
         if not claim:
             yield f"data: {json.dumps({'type': 'ERROR', 'message': f'Claim {claim_id} not found'})}\n\n"
@@ -85,10 +87,10 @@ class AgentBrain:
         # ----------------------------------------------------------------------
         # STAGE 2: WFP/HDX MARKET BENCHMARK VERIFICATION
         # ----------------------------------------------------------------------
-        yield await emit(2, "THINK", "Cross-referencing unit costs against UN World Food Programme (WFP) & HDX commodity benchmarks...")
+        yield await emit(2, "THINK", f"Cross-referencing unit costs against UN World Food Programme (WFP) & HDX benchmarks (Policy Tolerance: {active_tolerance}%)...")
         await asyncio.sleep(0.7)
 
-        val_result = price_validator.validate_line_items(line_items)
+        val_result = price_validator.validate_line_items(line_items, tolerance_pct=active_tolerance)
         market_ref_total = val_result["total_market_ref"]
         inflation_flags = val_result["flags"]
         overall_inflation_pct = val_result["overall_inflation_pct"]

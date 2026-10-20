@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     CRISIS_TOLERANCE_PERCENT: float = 35.0
 
     class Config:
-        env_file = ".env"
+        env_file = [".env", "../.env"]
         extra = "allow"
 
 settings = Settings()

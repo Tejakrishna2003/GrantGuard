@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from app.core.config import settings, UPLOAD_DIR
 from app.models.database import init_db
 from app.api import campaigns, donations, claims, verification, agent_runner, ledger
+from seed import run_seed
 
 # Initialize SQLite tables
 init_db()
@@ -59,5 +60,17 @@ def system_status():
         "gemini_mode": "LIVE" if has_gemini_key else "DETERMINISTIC_DEMO",
         "paypal_mode": "SANDBOX_LIVE" if has_paypal_creds else "SANDBOX_SIMULATION",
         "tolerance_default": settings.DEFAULT_TOLERANCE_PERCENT,
+        "tolerance_crisis": settings.CRISIS_TOLERANCE_PERCENT,
         "database": "SQLite (Pre-seeded)"
     }
+
+@app.post("/api/system/reset")
+def reset_database():
+    """
+    One-click reset of SQLite database to standard pre-seeded demo state.
+    """
+    try:
+        run_seed()
+        return {"success": True, "message": "Database successfully reset to initial demo state."}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
