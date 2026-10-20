@@ -224,7 +224,8 @@ export const AuditedLedgerGrid: React.FC<AuditedLedgerGridProps> = ({
   const defaultColDef = useMemo(() => ({
     sortable: true,
     filter: true,
-    resizable: true
+    resizable: true,
+    enableCellChangeFlash: true
   }), []);
 
   const rowClassRules: RowClassRules = useMemo(() => ({
@@ -329,10 +330,10 @@ export const AuditedLedgerGrid: React.FC<AuditedLedgerGridProps> = ({
           defaultColDef={defaultColDef}
           quickFilterText={quickFilterText}
           rowClassRules={rowClassRules}
-          enableCellChangeFlash={true}
           animateRows={true}
           pagination={true}
           paginationPageSize={10}
+          paginationPageSizeSelector={[10, 20, 50]}
           onGridReady={(params) => {
             try {
               params.api.sizeColumnsToFit();

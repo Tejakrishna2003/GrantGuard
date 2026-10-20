@@ -21,18 +21,30 @@ export const PayPalDonationBtn: React.FC<PayPalDonationBtnProps> = ({
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [sdkReady, setSdkReady] = useState<boolean>(false);
 
-  const paypalContainerRef = useRef<HTMLDivElement>(null);
   const finalAmount = customAmount ? parseFloat(customAmount) || selectedAmount : selectedAmount;
 
-  // Mount official PayPal JavaScript SDK Smart Buttons
+  // Use refs so PayPal SDK callbacks always read the freshest values without re-mounting
+  const amountRef = useRef<number>(finalAmount);
+  amountRef.current = finalAmount;
+  const donorRef = useRef<string>(donorName);
+  donorRef.current = donorName;
+
+  const paypalContainerRef = useRef<HTMLDivElement>(null);
+
+  // Mount official PayPal JavaScript SDK Smart Buttons safely once
   useEffect(() => {
     let isMounted = true;
+    const container = paypalContainerRef.current;
+    if (!container) return;
 
-    const renderPayPalButtons = () => {
+    // Create a dedicated DOM slot so React's fiber reconciler never tracks PayPal's iframe nodes
+    const slot = document.createElement('div');
+    slot.id = 'paypal-sdk-slot';
+    container.appendChild(slot);
+
+    const initButtons = () => {
       const paypal = (window as any).paypal;
-      if (!paypal || !paypalContainerRef.current) return;
-
-      paypalContainerRef.current.innerHTML = '';
+      if (!paypal || !isMounted) return;
 
       try {
         paypal.Buttons({
@@ -44,32 +56,35 @@ export const PayPalDonationBtn: React.FC<PayPalDonationBtnProps> = ({
             height: 46
           },
           createOrder: (_data: any, actions: any) => {
+            const currentAmount = amountRef.current || 50;
             return actions.order.create({
               purchase_units: [{
                 description: `Community Grant Escrow: ${campaign.title}`,
                 amount: {
                   currency_code: 'USD',
-                  value: finalAmount.toFixed(2)
+                  value: currentAmount.toFixed(2)
                 }
               }]
             });
           },
           onApprove: async (data: any, actions: any) => {
             setLoading(true);
+            const currentAmount = amountRef.current || 50;
+            const currentDonor = donorRef.current || 'Verified PayPal Donor';
             try {
               if (actions.order) {
                 await actions.order.capture();
               }
-              await api.captureDonation(campaign.id, finalAmount, donorName || 'Verified PayPal Donor');
+              await api.captureDonation(campaign.id, currentAmount, currentDonor);
               if (isMounted) {
-                setSuccessMsg(`PayPal Donation Captured! $${finalAmount.toFixed(2)} added to ${campaign.title}`);
+                setSuccessMsg(`PayPal Donation Captured! $${currentAmount.toFixed(2)} added to ${campaign.title}`);
                 setTimeout(() => onSuccess(), 1500);
               }
             } catch (err) {
               console.error('PayPal capture error:', err);
-              await api.captureDonation(campaign.id, finalAmount, donorName);
+              await api.captureDonation(campaign.id, currentAmount, currentDonor);
               if (isMounted) {
-                setSuccessMsg(`PayPal Donation Recorded! $${finalAmount.toFixed(2)} added to ${campaign.title}`);
+                setSuccessMsg(`PayPal Donation Recorded! $${currentAmount.toFixed(2)} added to ${campaign.title}`);
                 setTimeout(() => onSuccess(), 1500);
               }
             } finally {
@@ -77,35 +92,44 @@ export const PayPalDonationBtn: React.FC<PayPalDonationBtnProps> = ({
             }
           },
           onError: (err: any) => {
-            console.warn('PayPal Smart Buttons error (using sandbox simulated flow):', err);
+            console.warn('PayPal Smart Buttons notice:', err);
           }
-        }).render(paypalContainerRef.current);
-
-        setSdkReady(true);
+        }).render(slot).then(() => {
+          if (isMounted) setSdkReady(true);
+        }).catch((e: any) => {
+          console.warn('PayPal Buttons render warning:', e);
+        });
       } catch (e) {
-        console.warn('Failed to render PayPal Smart Buttons:', e);
+        console.warn('PayPal Buttons initialization warning:', e);
       }
     };
 
     if ((window as any).paypal) {
-      renderPayPalButtons();
+      initButtons();
     } else {
       const interval = setInterval(() => {
         if ((window as any).paypal) {
           clearInterval(interval);
-          renderPayPalButtons();
+          initButtons();
         }
-      }, 300);
+      }, 250);
+
       return () => {
         clearInterval(interval);
         isMounted = false;
+        if (slot.parentNode) {
+          slot.parentNode.removeChild(slot);
+        }
       };
     }
 
     return () => {
       isMounted = false;
+      if (slot.parentNode) {
+        slot.parentNode.removeChild(slot);
+      }
     };
-  }, [finalAmount, campaign.id, donorName]);
+  }, [campaign.id]);
 
   const handleSimulatedPayPalDonation = async () => {
     setLoading(true);
