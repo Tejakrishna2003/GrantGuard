@@ -49,28 +49,23 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
   const latestAlert = logs.filter(l => l.type === 'ALERT').slice(-1)[0];
 
   return (
-    <div className="glass-panel rounded-2xl p-4 sm:p-5 shadow-2xl mb-6 overflow-hidden border border-white/10 relative">
-      {/* Background ambient glow */}
-      <div className={`absolute -right-10 -top-10 w-64 h-64 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${
-        latestAlert ? 'bg-red-500/10' : isStreaming ? 'bg-sky-500/10' : 'bg-purple-500/5'
-      }`} />
-
-      {/* Terminal Title Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 border-b border-white/10 mb-3.5 gap-2 relative z-10">
+    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm mb-6">
+      {/* Title Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 border-b border-slate-200 mb-3.5 gap-2">
         <div className="flex items-center space-x-2.5">
           <div className="flex space-x-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-red-500/80 shadow-sm shadow-red-500/40" />
-            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80 shadow-sm shadow-amber-500/40" />
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 shadow-sm shadow-emerald-500/40" />
+            <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
           </div>
 
-          <span className="text-xs font-mono font-bold text-slate-100 ml-1.5 flex items-center space-x-2">
-            <Cpu className="w-3.5 h-3.5 text-sky-400" />
+          <span className="text-xs font-mono font-bold text-slate-900 ml-1.5 flex items-center space-x-2">
+            <Cpu className="w-3.5 h-3.5 text-sky-600" />
             <span>Autonomous Cognitive Reasoning Stream</span>
           </span>
 
           {activeClaimId && (
-            <span className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-sky-950/80 text-sky-300 border border-sky-800/80 shadow-sm">
+            <span className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-sky-50 text-sky-800 border border-sky-200 font-semibold">
               {activeClaimId}
             </span>
           )}
@@ -78,20 +73,20 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
 
         <div className="flex items-center space-x-2">
           {isStreaming ? (
-            <span className="inline-flex items-center space-x-2 text-[11px] text-sky-400 font-mono font-bold px-2.5 py-1 rounded-full bg-sky-950/80 border border-sky-800 shadow-sm shadow-sky-500/10">
+            <span className="inline-flex items-center space-x-2 text-[11px] text-sky-800 font-mono font-bold px-2.5 py-1 rounded-full bg-sky-50 border border-sky-200">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-500 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-600" />
               </span>
               <span>COGNITIVE LOOP ACTIVE</span>
             </span>
           ) : latestAlert ? (
-            <span className="inline-flex items-center space-x-1.5 text-[10px] text-red-300 font-mono font-bold px-2.5 py-1 rounded-full bg-red-950/80 border border-red-800 shadow-sm">
-              <ShieldAlert className="w-3 h-3 text-red-400" />
+            <span className="inline-flex items-center space-x-1.5 text-[10px] text-rose-800 font-mono font-bold px-2.5 py-1 rounded-full bg-rose-50 border border-rose-200">
+              <ShieldAlert className="w-3 h-3 text-rose-600" />
               <span>FRAUD DETECTED • CAPITAL FROZEN</span>
             </span>
           ) : (
-            <span className="inline-flex items-center space-x-1.5 text-[10px] text-slate-400 font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-white/5">
+            <span className="inline-flex items-center space-x-1.5 text-[10px] text-slate-600 font-mono px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 font-medium">
               <Activity className="w-3 h-3 text-slate-500" />
               <span>AGENT IDLE • STANDBY</span>
             </span>
@@ -100,129 +95,129 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
       </div>
 
       {/* Visual 5-Stage Cognitive Pipeline */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-3.5 relative z-10">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 mb-3.5">
         {/* Stage 1 */}
-        <div className={`p-2 rounded-xl border text-center transition-all duration-300 ${
+        <div className={`p-2.5 rounded-xl border text-center transition-all duration-300 ${
           pipelineState.step1 === 'done'
-            ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300'
+            ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-medium'
             : pipelineState.step1 === 'active'
-            ? 'bg-sky-950/50 border-sky-500 text-sky-300 ring-1 ring-sky-500/50 animate-pulse'
-            : 'bg-slate-900/60 border-white/5 text-slate-500'
+            ? 'bg-sky-50 border-sky-400 text-sky-900 ring-2 ring-sky-200 font-semibold animate-pulse'
+            : 'bg-slate-50 border-slate-200 text-slate-500'
         }`}>
           <div className="flex items-center justify-center space-x-1 mb-0.5">
-            <FileSearch className="w-3 h-3" />
+            <FileSearch className="w-3.5 h-3.5" />
             <span className="text-[10px] font-bold uppercase tracking-wider">1. OCR Extract</span>
           </div>
-          <span className="text-[9px] block opacity-80">Gemini 2.0 Vision</span>
+          <span className="text-[10px] block opacity-80">Gemini 2.0 Vision</span>
         </div>
 
         {/* Stage 2 */}
-        <div className={`p-2 rounded-xl border text-center transition-all duration-300 ${
+        <div className={`p-2.5 rounded-xl border text-center transition-all duration-300 ${
           pipelineState.step2 === 'alert'
-            ? 'bg-red-950/50 border-red-700 text-red-300 ring-1 ring-red-500/50'
+            ? 'bg-rose-50 border-rose-300 text-rose-900 ring-2 ring-rose-200 font-bold'
             : pipelineState.step2 === 'done'
-            ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300'
+            ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-medium'
             : pipelineState.step2 === 'active'
-            ? 'bg-sky-950/50 border-sky-500 text-sky-300 ring-1 ring-sky-500/50 animate-pulse'
-            : 'bg-slate-900/60 border-white/5 text-slate-500'
+            ? 'bg-sky-50 border-sky-400 text-sky-900 ring-2 ring-sky-200 font-semibold animate-pulse'
+            : 'bg-slate-50 border-slate-200 text-slate-500'
         }`}>
           <div className="flex items-center justify-center space-x-1 mb-0.5">
-            <Scale className="w-3 h-3" />
+            <Scale className="w-3.5 h-3.5" />
             <span className="text-[10px] font-bold uppercase tracking-wider">2. WFP Check</span>
           </div>
-          <span className="text-[9px] block opacity-80">Market Baseline</span>
+          <span className="text-[10px] block opacity-80">Market Baseline</span>
         </div>
 
         {/* Stage 3 */}
-        <div className={`p-2 rounded-xl border text-center transition-all duration-300 ${
+        <div className={`p-2.5 rounded-xl border text-center transition-all duration-300 ${
           pipelineState.step3 === 'alert'
-            ? 'bg-amber-950/50 border-amber-700 text-amber-300'
+            ? 'bg-amber-50 border-amber-300 text-amber-900 font-bold'
             : pipelineState.step3 === 'done'
-            ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300'
+            ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-medium'
             : pipelineState.step3 === 'active'
-            ? 'bg-sky-950/50 border-sky-500 text-sky-300 ring-1 ring-sky-500/50 animate-pulse'
-            : 'bg-slate-900/60 border-white/5 text-slate-500'
+            ? 'bg-sky-50 border-sky-400 text-sky-900 ring-2 ring-sky-200 font-semibold animate-pulse'
+            : 'bg-slate-50 border-slate-200 text-slate-500'
         }`}>
           <div className="flex items-center justify-center space-x-1 mb-0.5">
-            <Smartphone className="w-3 h-3" />
+            <Smartphone className="w-3.5 h-3.5" />
             <span className="text-[10px] font-bold uppercase tracking-wider">3. Field Proof</span>
           </div>
-          <span className="text-[9px] block opacity-80">Twilio OTP & EXIF</span>
+          <span className="text-[10px] block opacity-80">Twilio OTP & EXIF</span>
         </div>
 
         {/* Stage 4 */}
-        <div className={`p-2 rounded-xl border text-center transition-all duration-300 ${
+        <div className={`p-2.5 rounded-xl border text-center transition-all duration-300 ${
           pipelineState.step4 === 'alert'
-            ? 'bg-red-950/50 border-red-700 text-red-300 ring-1 ring-red-500/50'
+            ? 'bg-rose-50 border-rose-300 text-rose-900 ring-2 ring-rose-200 font-bold'
             : pipelineState.step4 === 'done'
-            ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300'
+            ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-medium'
             : pipelineState.step4 === 'active'
-            ? 'bg-sky-950/50 border-sky-500 text-sky-300 ring-1 ring-sky-500/50 animate-pulse'
-            : 'bg-slate-900/60 border-white/5 text-slate-500'
+            ? 'bg-sky-50 border-sky-400 text-sky-900 ring-2 ring-sky-200 font-semibold animate-pulse'
+            : 'bg-slate-50 border-slate-200 text-slate-500'
         }`}>
           <div className="flex items-center justify-center space-x-1 mb-0.5">
-            <Cpu className="w-3 h-3" />
+            <Cpu className="w-3.5 h-3.5" />
             <span className="text-[10px] font-bold uppercase tracking-wider">4. Discrepancy Gate</span>
           </div>
-          <span className="text-[9px] block opacity-80">&lt;15% Tolerance Rule</span>
+          <span className="text-[10px] block opacity-80">&lt;15% Tolerance Rule</span>
         </div>
 
         {/* Stage 5 */}
-        <div className={`p-2 rounded-xl border text-center transition-all duration-300 col-span-2 sm:col-span-1 ${
+        <div className={`p-2.5 rounded-xl border text-center transition-all duration-300 col-span-2 sm:col-span-1 ${
           pipelineState.step5 === 'frozen'
-            ? 'bg-red-950/60 border-red-600 text-red-200 ring-1 ring-red-500'
+            ? 'bg-rose-100 border-rose-400 text-rose-950 font-bold ring-2 ring-rose-200'
             : pipelineState.step5 === 'done'
-            ? 'bg-emerald-950/50 border-emerald-600 text-emerald-200'
+            ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-medium'
             : pipelineState.step5 === 'active'
-            ? 'bg-sky-950/50 border-sky-500 text-sky-300 ring-1 ring-sky-500/50 animate-pulse'
-            : 'bg-slate-900/60 border-white/5 text-slate-500'
+            ? 'bg-sky-50 border-sky-400 text-sky-900 ring-2 ring-sky-200 font-semibold animate-pulse'
+            : 'bg-slate-50 border-slate-200 text-slate-500'
         }`}>
           <div className="flex items-center justify-center space-x-1 mb-0.5">
-            {pipelineState.step5 === 'frozen' ? <Lock className="w-3 h-3 text-red-400" /> : <Send className="w-3 h-3" />}
+            {pipelineState.step5 === 'frozen' ? <Lock className="w-3.5 h-3.5 text-rose-700" /> : <Send className="w-3.5 h-3.5 text-emerald-700" />}
             <span className="text-[10px] font-bold uppercase tracking-wider">
               {pipelineState.step5 === 'frozen' ? '5. Payout Frozen' : '5. PayPal Payout'}
             </span>
           </div>
-          <span className="text-[9px] block opacity-80">
+          <span className="text-[10px] block opacity-80">
             {pipelineState.step5 === 'frozen' ? 'Capital Locked' : 'Autonomous API'}
           </span>
         </div>
       </div>
 
-      {/* Terminal Output Stream */}
+      {/* Terminal Output Stream (Clean Monospace on White/Slate) */}
       <div
         ref={scrollRef}
-        className="font-mono text-xs max-h-56 overflow-y-auto space-y-2 pr-2 leading-relaxed bg-black/50 p-3.5 rounded-xl border border-white/5 shadow-inner"
+        className="font-mono text-xs max-h-56 overflow-y-auto space-y-2 pr-2 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-inner"
       >
         {logs.length === 0 ? (
-          <div className="text-slate-400 italic py-6 text-center font-sans text-xs">
-            💡 Click one of the <strong className="text-sky-300">"Judge Demos"</strong> buttons above or submit an invoice claim to watch the autonomous AI reasoning loop execute live.
+          <div className="text-slate-500 italic py-6 text-center font-sans text-xs">
+            💡 Click one of the <strong className="text-slate-900">"Judge Demos"</strong> buttons above or submit an invoice claim to watch the autonomous AI reasoning loop execute live.
           </div>
         ) : (
           logs.map((log, index) => {
-            let badgeStyle = 'bg-slate-800 text-slate-300 border-slate-700';
-            let icon = <ArrowRight className="w-3 h-3 text-sky-400 shrink-0" />;
+            let badgeStyle = 'bg-slate-200 text-slate-800 border-slate-300';
+            let icon = <ArrowRight className="w-3 h-3 text-sky-600 shrink-0" />;
 
             if (log.type === 'ALERT') {
-              badgeStyle = 'bg-red-950 text-red-300 border-red-700 font-bold shadow-sm shadow-red-950';
-              icon = <AlertTriangle className="w-3 h-3 text-red-400 shrink-0" />;
+              badgeStyle = 'bg-rose-100 text-rose-800 border-rose-300 font-bold';
+              icon = <AlertTriangle className="w-3 h-3 text-rose-600 shrink-0" />;
             } else if (log.type === 'DECIDE') {
-              badgeStyle = 'bg-purple-950 text-purple-300 border-purple-700 font-bold';
-              icon = <CheckCircle2 className="w-3 h-3 text-purple-400 shrink-0" />;
+              badgeStyle = 'bg-purple-100 text-purple-800 border-purple-300 font-bold';
+              icon = <CheckCircle2 className="w-3 h-3 text-purple-600 shrink-0" />;
             } else if (log.type === 'ACTION') {
-              badgeStyle = 'bg-emerald-950 text-emerald-300 border-emerald-700 font-bold';
-              icon = <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />;
+              badgeStyle = 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
+              icon = <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />;
             }
 
             return (
               <div key={index} className="flex items-start space-x-2 animate-fadeIn">
-                <span className="text-[10px] text-slate-500 shrink-0 font-mono mt-0.5">
+                <span className="text-[10px] text-slate-400 shrink-0 font-mono mt-0.5">
                   [{log.timestamp}]
                 </span>
                 <span className={`text-[9px] px-1.5 py-0.5 rounded uppercase border shrink-0 tracking-wider font-semibold ${badgeStyle}`}>
                   {log.type}
                 </span>
-                <p className="text-slate-200 break-words flex-1 text-[11px] leading-snug">
+                <p className="text-slate-900 break-words flex-1 text-[11px] leading-snug font-medium">
                   {log.message}
                 </p>
               </div>

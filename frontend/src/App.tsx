@@ -95,11 +95,11 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       {!backendConnected && (
-        <div className="bg-amber-950/90 border-b border-amber-800 text-amber-200 px-4 py-2 text-xs text-center font-medium flex items-center justify-center space-x-2">
+        <div className="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2 text-xs text-center font-medium flex items-center justify-center space-x-2">
           <span>⚠️ Backend offline or unreachable at port 8000. Run:</span>
-          <code className="bg-amber-900 px-2 py-0.5 rounded font-mono text-white">
+          <code className="bg-amber-100 border border-amber-300 px-2 py-0.5 rounded font-mono text-amber-900">
             cd backend && .\venv\Scripts\uvicorn app.main:app --port 8000
           </code>
         </div>
@@ -147,19 +147,19 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
+      <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-600">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div>
-            <strong>GrantPool AI</strong> — Built for the <strong>PayPal AI Hackathon 2026</strong>.
+            <strong className="text-slate-900 font-bold">GrantPool AI</strong> — Built for the <strong className="text-slate-900 font-bold">PayPal AI Hackathon 2026</strong>.
           </div>
           <div className="flex items-center space-x-4">
-            <span className="text-slate-400">PayPal Donations & Payouts</span>
-            <span>•</span>
-            <span className="text-slate-400">AG Grid React Community</span>
-            <span>•</span>
-            <span className="text-slate-400">Gemini 2.0 Flash</span>
-            <span>•</span>
-            <span className="text-emerald-400 font-medium">
+            <span className="text-slate-600 font-medium">PayPal Donations & Payouts</span>
+            <span className="text-slate-300">•</span>
+            <span className="text-slate-600 font-medium">AG Grid React Community</span>
+            <span className="text-slate-300">•</span>
+            <span className="text-slate-600 font-medium">Gemini 2.0 Flash</span>
+            <span className="text-slate-300">•</span>
+            <span className="text-emerald-700 font-semibold">
               Open Source (MIT)
             </span>
           </div>

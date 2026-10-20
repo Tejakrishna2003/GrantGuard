@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, QrCode, CheckCircle2, ShieldCheck, Smartphone, Sparkles } from 'lucide-react';
+import { X, CheckCircle2, Smartphone, Sparkles } from 'lucide-react';
 import { Campaign } from '../lib/types';
 import { api } from '../lib/api';
 
@@ -87,57 +87,57 @@ export const VerifyProofModal: React.FC<VerifyProofModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+      <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white"
+          className="absolute top-4 right-4 p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900"
         >
           <X className="w-4 h-4" />
         </button>
 
-        <div className="flex items-center space-x-2 text-emerald-400 mb-2">
+        <div className="flex items-center space-x-2 text-emerald-700 mb-2">
           <Smartphone className="w-5 h-5" />
           <span className="text-xs font-bold uppercase tracking-wider">Beneficiary Ground-Truth</span>
         </div>
 
-        <h3 className="text-xl font-bold text-white">
+        <h3 className="text-xl font-bold text-slate-900">
           Field Delivery Sign-Off
         </h3>
-        <p className="text-xs text-slate-400 mt-1">
+        <p className="text-xs text-slate-600 mt-1">
           Cryptographically confirm received aid supplies via Twilio OTP and photo proof.
         </p>
 
         {step === 'scan' && (
           <div className="my-6 space-y-4 text-center">
             {/* Delivery QR Display */}
-            <div className="p-4 bg-white rounded-xl inline-block shadow-inner">
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl inline-block shadow-sm">
               <img
                 src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=grantpool://verify?campaign=${campaign.id}`}
                 alt="Delivery QR"
                 className="w-40 h-40 mx-auto"
               />
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-600">
               Delivery agent shows this QR to beneficiary or volunteer lead upon arrival.
             </p>
 
-            <div className="pt-2">
-              <label className="text-xs text-slate-400 font-medium block mb-1.5 text-left">
+            <div className="pt-2 text-left">
+              <label className="text-xs text-slate-700 font-semibold block mb-1.5">
                 Beneficiary Mobile Phone
               </label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-slate-400 font-mono font-bold"
               />
             </div>
 
             <button
               onClick={handleSendOTP}
               disabled={loading}
-              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center space-x-1.5"
+              className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center justify-center space-x-1.5"
             >
               <span>{loading ? 'Sending SMS...' : 'Request Twilio OTP Verification'}</span>
             </button>
@@ -147,25 +147,25 @@ export const VerifyProofModal: React.FC<VerifyProofModalProps> = ({
         {step === 'otp' && (
           <div className="my-6 space-y-4">
             {/* Zero-friction Judge Auto-Fill Banner */}
-            <div className="p-3 bg-sky-950/60 border border-sky-800 rounded-xl text-left">
-              <div className="flex items-center space-x-1.5 text-sky-400 text-xs font-bold">
-                <Sparkles className="w-3.5 h-3.5" />
+            <div className="p-3.5 bg-sky-50 border border-sky-200 rounded-xl text-left">
+              <div className="flex items-center space-x-1.5 text-sky-800 text-xs font-bold">
+                <Sparkles className="w-3.5 h-3.5 text-sky-600" />
                 <span>Judge Demo Bypass Mode Active</span>
               </div>
-              <p className="text-[11px] text-slate-300 mt-1">
-                Demo code <strong className="text-white font-mono">482910</strong> pre-generated so you don't need a live phone.
+              <p className="text-xs text-slate-700 mt-1">
+                Demo code <strong className="text-slate-900 font-mono font-bold">482910</strong> pre-generated so you don't need a live phone.
               </p>
               <button
                 onClick={handleAutoFillAndVerify}
                 disabled={loading}
-                className="mt-2 w-full py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg transition-all"
+                className="mt-2.5 w-full py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition-all"
               >
                 Auto-Fill Code (482910) & Verify Proof
               </button>
             </div>
 
             <div>
-              <label className="text-xs text-slate-400 font-medium block mb-1">
+              <label className="text-xs text-slate-700 font-semibold block mb-1">
                 Or Enter 6-Digit SMS Code
               </label>
               <input
@@ -174,14 +174,14 @@ export const VerifyProofModal: React.FC<VerifyProofModalProps> = ({
                 value={otpCode}
                 onChange={(e) => setOtpCode(e.target.value)}
                 placeholder="482910"
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-center text-lg font-mono tracking-widest text-white focus:outline-none focus:border-emerald-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-center text-xl font-mono tracking-widest text-slate-900 font-bold focus:bg-white focus:outline-none focus:border-slate-400"
               />
             </div>
 
             <button
               onClick={handleAutoFillAndVerify}
               disabled={loading || otpCode.length < 6}
-              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition-all"
+              className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-sm transition-all"
             >
               {loading ? 'Verifying OTP & Geolocation...' : 'Confirm Delivery Ground Truth'}
             </button>
@@ -189,10 +189,10 @@ export const VerifyProofModal: React.FC<VerifyProofModalProps> = ({
         )}
 
         {step === 'confirmed' && (
-          <div className="my-6 p-4 rounded-xl bg-emerald-950/60 border border-emerald-800 text-center space-y-2">
-            <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
-            <div className="text-sm font-bold text-white">Delivery Proof Verified!</div>
-            <div className="text-xs text-emerald-300">
+          <div className="my-6 p-5 rounded-xl bg-emerald-50 border border-emerald-200 text-center space-y-2">
+            <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+            <div className="text-sm font-bold text-slate-900">Delivery Proof Verified!</div>
+            <div className="text-xs text-emerald-700 font-medium">
               Ground truth recorded. AI agent is now reconciling line items.
             </div>
           </div>
