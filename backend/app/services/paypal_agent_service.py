@@ -2,7 +2,7 @@ import uuid
 import logging
 import httpx
 from typing import Dict, Any, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ class PayPalAgentService:
         if settings.DEMO_MODE or not self.client_id or "YOUR_" in self.client_id:
             return "mock_sandbox_access_token_grantpool_agent"
 
-        if self.access_token and self.token_expiry and datetime.utcnow() < self.token_expiry:
+        if self.access_token and self.token_expiry and datetime.now(timezone.utc) < self.token_expiry:
             return self.access_token
 
         url = f"{self.api_base}/v1/oauth2/token"
@@ -62,7 +62,7 @@ class PayPalAgentService:
                 "amount": amount,
                 "currency": "USD",
                 "mode": "SANDBOX_SIMULATED",
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
 
         url = f"{self.api_base}/v2/checkout/orders/{order_id}/capture"
@@ -76,20 +76,18 @@ class PayPalAgentService:
                 if res.status_code in (200, 201):
                     return {"success": True, "data": res.json(), "status": "COMPLETED"}
                 else:
-                    # Return sandbox simulated response if order_id was client-simulated
+                    logger.warning(f"PayPal capture returned {res.status_code}: {res.text}")
                     return {
-                        "success": True,
-                        "capture_id": f"CAP-SANDBOX-{uuid.uuid4().hex[:8].upper()}",
-                        "status": "COMPLETED",
-                        "amount": amount
+                        "success": False,
+                        "error": f"PayPal capture failed ({res.status_code}): {res.text}",
+                        "status": "FAILED"
                     }
         except Exception as e:
             logger.error(f"Error capturing order {order_id}: {e}")
             return {
-                "success": True,
-                "capture_id": f"CAP-SANDBOX-{uuid.uuid4().hex[:8].upper()}",
-                "status": "COMPLETED",
-                "amount": amount
+                "success": False,
+                "error": str(e),
+                "status": "ERROR"
             }
 
     async def execute_payout(
@@ -120,7 +118,7 @@ class PayPalAgentService:
                 "note": note,
                 "claim_id": claim_id,
                 "mode": "PAYPAL_SANDBOX_AGENT_RELEASE",
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
 
         url = f"{self.api_base}/v1/payments/payouts"

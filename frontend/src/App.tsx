@@ -17,6 +17,8 @@ export const App: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [transactions, setTransactions] = useState<LedgerTransaction[]>([]);
   const [metrics, setMetrics] = useState<GlobalMetrics | null>(null);
+  const [systemStatus, setSystemStatus] = useState<any>(null);
+  const [backendConnected, setBackendConnected] = useState<boolean>(true);
 
   // Modals & Drawers
   const [selectedTx, setSelectedTx] = useState<LedgerTransaction | null>(null);
@@ -31,16 +33,20 @@ export const App: React.FC = () => {
 
   const loadData = async () => {
     try {
-      const [camps, txs, mets] = await Promise.all([
+      const [camps, txs, mets, sys] = await Promise.all([
         api.getCampaigns(),
         api.getLedger(),
-        api.getMetrics()
+        api.getMetrics(),
+        api.getSystemStatus().catch(() => null)
       ]);
       setCampaigns(camps);
       setTransactions(txs);
       setMetrics(mets);
+      setSystemStatus(sys);
+      setBackendConnected(true);
     } catch (e) {
       console.error('Failed to load initial data:', e);
+      setBackendConnected(false);
     }
   };
 
@@ -90,12 +96,22 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+      {!backendConnected && (
+        <div className="bg-amber-950/90 border-b border-amber-800 text-amber-200 px-4 py-2 text-xs text-center font-medium flex items-center justify-center space-x-2">
+          <span>⚠️ Backend offline or unreachable at port 8000. Run:</span>
+          <code className="bg-amber-900 px-2 py-0.5 rounded font-mono text-white">
+            cd backend && .\venv\Scripts\uvicorn app.main:app --port 8000
+          </code>
+        </div>
+      )}
+
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onRefresh={loadData}
         onTriggerScenario={triggerAgentReconciliation}
         isStreaming={isStreaming}
+        systemStatus={systemStatus}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -143,9 +159,9 @@ export const App: React.FC = () => {
             <span>•</span>
             <span className="text-slate-400">Gemini 2.0 Flash</span>
             <span>•</span>
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="text-sky-400 hover:underline">
-              MIT License
-            </a>
+            <span className="text-emerald-400 font-medium">
+              Open Source (MIT)
+            </span>
           </div>
         </div>
       </footer>

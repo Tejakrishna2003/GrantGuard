@@ -1,6 +1,6 @@
 import io
 import csv
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
@@ -122,5 +122,5 @@ def export_ledger_csv(db: Session = Depends(get_db)):
     return Response(
         content=csv_data,
         media_type="text/csv",
-        headers={"Content-Disposition": f"attachment; filename=grantpool_audit_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.csv"}
+        headers={"Content-Disposition": f"attachment; filename=grantpool_audit_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.csv"}
     )

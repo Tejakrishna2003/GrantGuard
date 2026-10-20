@@ -49,3 +49,15 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "healthy"}
+
+@app.get("/api/system/status")
+def system_status():
+    has_gemini_key = bool(settings.GEMINI_API_KEY and not settings.DEMO_MODE)
+    has_paypal_creds = bool(settings.PAYPAL_CLIENT_ID and not settings.DEMO_MODE and "YOUR_" not in settings.PAYPAL_CLIENT_ID)
+    return {
+        "demo_mode": settings.DEMO_MODE,
+        "gemini_mode": "LIVE" if has_gemini_key else "DETERMINISTIC_DEMO",
+        "paypal_mode": "SANDBOX_LIVE" if has_paypal_creds else "SANDBOX_SIMULATION",
+        "tolerance_default": settings.DEFAULT_TOLERANCE_PERCENT,
+        "database": "SQLite (Pre-seeded)"
+    }

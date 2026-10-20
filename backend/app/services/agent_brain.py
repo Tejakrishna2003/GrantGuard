@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import AsyncGenerator, Dict, Any, List
 from sqlalchemy.orm import Session
 
@@ -47,7 +47,7 @@ class AgentBrain:
                 step_index=step,
                 log_type=log_type,
                 message=message,
-                created_at=datetime.utcnow()
+                created_at=datetime.now(timezone.utc)
             )
             db.add(thought)
             db.commit()
@@ -56,7 +56,7 @@ class AgentBrain:
                 "step": step,
                 "type": log_type,
                 "message": message,
-                "timestamp": datetime.utcnow().strftime("%H:%M:%S")
+                "timestamp": datetime.now(timezone.utc).strftime("%H:%M:%S")
             }
             return f"data: {json.dumps(payload)}\n\n"
 
@@ -147,7 +147,7 @@ class AgentBrain:
                     ai_summary="Milestone awaiting field beneficiary OTP sign-off. Payout held in escrow.",
                     flag_reasons=["Awaiting Beneficiary OTP verification"],
                     paypal_batch_status="HELD",
-                    created_at=datetime.utcnow()
+                    created_at=datetime.now(timezone.utc)
                 )
                 db.add(ledger_entry)
 
@@ -207,10 +207,11 @@ class AgentBrain:
             yield await emit(4, "DECIDE", f"VERDICT: FLAGGED — HALT DISBURSEMENT. {ai_summary}")
             await asyncio.sleep(0.7)
 
-            # Freeze milestone, protect capital in campaign
+            # Freeze milestone, protect capital in campaign (avoid duplicate double-counting)
+            was_already_flagged = (claim.status == "FLAGGED")
             milestone.status = "FLAGGED"
             claim.status = "FLAGGED"
-            if campaign:
+            if campaign and not was_already_flagged:
                 campaign.protected_fraud_amount += total_diverted
                 db.commit()
 
@@ -244,7 +245,7 @@ class AgentBrain:
                     ai_summary=ai_summary,
                     flag_reasons=summary_reasons,
                     paypal_batch_status="HELD",
-                    created_at=datetime.utcnow()
+                    created_at=datetime.now(timezone.utc)
                 )
                 db.add(ledger_entry)
             db.commit()
@@ -267,9 +268,10 @@ class AgentBrain:
             )
 
             payout_id = payout_res.get("batch_id", f"PAY-{uuid.uuid4().hex[:6].upper()}")
+            was_already_reconciled = (claim.status == "RECONCILED")
             milestone.status = "RECONCILED"
             claim.status = "RECONCILED"
-            if campaign:
+            if campaign and not was_already_reconciled:
                 campaign.disbursed_amount += total_invoiced
                 db.commit()
 
@@ -305,7 +307,7 @@ class AgentBrain:
                     flag_reasons=[],
                     paypal_payout_id=payout_id,
                     paypal_batch_status="SUCCESS",
-                    created_at=datetime.utcnow()
+                    created_at=datetime.now(timezone.utc)
                 )
                 db.add(ledger_entry)
             db.commit()

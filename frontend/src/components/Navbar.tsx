@@ -7,6 +7,11 @@ interface NavbarProps {
   onRefresh: () => void;
   onTriggerScenario: (claimId: string) => void;
   isStreaming: boolean;
+  systemStatus?: {
+    demo_mode: boolean;
+    gemini_mode: string;
+    paypal_mode: string;
+  } | null;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -14,7 +19,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   onRefresh,
   onTriggerScenario,
-  isStreaming
+  isStreaming,
+  systemStatus
 }) => {
   return (
     <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
@@ -32,6 +38,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
                 <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-sky-950 text-sky-400 border border-sky-800">
                   PayPal Sandbox
+                </span>
+                <span
+                  title="Dual-mode: Real Gemini 2.0 Flash Vision runs when GEMINI_API_KEY is in .env; currently using deterministic demo mode for zero judge friction."
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-medium border flex items-center space-x-1 cursor-help ${
+                    systemStatus?.gemini_mode === 'LIVE'
+                      ? 'bg-emerald-950 text-emerald-300 border-emerald-800'
+                      : 'bg-purple-950 text-purple-300 border-purple-800'
+                  }`}
+                >
+                  <span className={`w-1.5 h-1.5 rounded-full ${systemStatus?.gemini_mode === 'LIVE' ? 'bg-emerald-400 animate-ping' : 'bg-purple-400'}`} />
+                  <span>Gemini: {systemStatus?.gemini_mode === 'LIVE' ? 'Live' : 'Demo Mode'}</span>
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 hidden sm:block">

@@ -27,6 +27,9 @@ ENV/
 *.db
 *.sqlite
 *.sqlite3
+*.db-journal
+uploads/
+backend/uploads/
 
 # Node.js
 node_modules/

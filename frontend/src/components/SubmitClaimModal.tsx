@@ -18,7 +18,9 @@ export const SubmitClaimModal: React.FC<SubmitClaimModalProps> = ({
   const [vendorEmail, setVendorEmail] = useState<string>('apex-vendor@example.com');
   const [invoiceNumber, setInvoiceNumber] = useState<string>('INV-2026-904');
   const [invoiceAmount, setInvoiceAmount] = useState<number>(1000);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [selectedMilestoneId, setSelectedMilestoneId] = useState<string>('');
   const [milestones, setMilestones] = useState<any[]>([]);
@@ -61,6 +63,9 @@ export const SubmitClaimModal: React.FC<SubmitClaimModalProps> = ({
       formData.append('vendor_paypal_email', vendorEmail);
       formData.append('invoice_number', invoiceNumber);
       formData.append('invoice_amount', invoiceAmount.toString());
+      if (selectedFile) {
+        formData.append('invoice_file', selectedFile);
+      }
 
       const res = await api.submitClaim(formData);
       onSuccess(res.claim_id);
@@ -151,14 +156,45 @@ export const SubmitClaimModal: React.FC<SubmitClaimModalProps> = ({
             <label className="text-xs text-slate-400 font-medium block mb-1">
               Upload Invoice Receipt (PDF or Image)
             </label>
-            <div className="border-2 border-dashed border-slate-800 hover:border-slate-700 bg-slate-950 rounded-xl p-4 text-center cursor-pointer transition-all">
-              <Upload className="w-6 h-6 text-slate-500 mx-auto mb-1" />
-              <span className="text-xs text-slate-300 font-medium block">
-                Click or drag invoice file here
-              </span>
-              <span className="text-[10px] text-slate-500">
-                Supports PDF, PNG, JPG (Pre-loaded with sample demo invoices)
-              </span>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setSelectedFile(e.target.files[0]);
+                }
+              }}
+              accept="image/*,application/pdf"
+              className="hidden"
+            />
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
+                selectedFile
+                  ? 'border-emerald-600 bg-emerald-950/20'
+                  : 'border-slate-800 hover:border-slate-700 bg-slate-950'
+              }`}
+            >
+              <Upload className={`w-6 h-6 mx-auto mb-1 ${selectedFile ? 'text-emerald-400' : 'text-slate-500'}`} />
+              {selectedFile ? (
+                <div>
+                  <span className="text-xs text-emerald-300 font-semibold block">
+                    ✓ {selectedFile.name}
+                  </span>
+                  <span className="text-[10px] text-slate-400">
+                    {(selectedFile.size / 1024).toFixed(1)} KB • Click to replace file
+                  </span>
+                </div>
+              ) : (
+                <div>
+                  <span className="text-xs text-slate-300 font-medium block">
+                    Click to select invoice file
+                  </span>
+                  <span className="text-[10px] text-slate-500">
+                    Supports PDF, PNG, JPG (Or leave empty to use sample invoice)
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 

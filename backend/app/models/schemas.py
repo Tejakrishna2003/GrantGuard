@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional, Dict, Any
 from sqlalchemy import (
     Column, String, Float, Integer, Boolean, DateTime, ForeignKey, Text, JSON, create_engine
@@ -25,7 +25,7 @@ class Campaign(Base):
     protected_fraud_amount = Column(Float, default=0.0)
     status = Column(String, default="ACTIVE")  # ACTIVE, COMPLETED, FROZEN
     image_url = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     milestones = relationship("Milestone", back_populates="campaign", cascade="all, delete-orphan")
 
@@ -40,7 +40,7 @@ class Milestone(Base):
     vendor_name = Column(String, nullable=True)
     vendor_paypal_email = Column(String, nullable=True)
     status = Column(String, default="PENDING_CLAIM")  # PENDING_CLAIM, IN_REVIEW, RECONCILED, FLAGGED, OVERRIDDEN
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     campaign = relationship("Campaign", back_populates="milestones")
     claims = relationship("Claim", back_populates="milestone", cascade="all, delete-orphan")
@@ -58,7 +58,7 @@ class Claim(Base):
     invoice_file_url = Column(String, nullable=True)
     extracted_items = Column(JSON, default=list)  # list of {description, qty, unit_price, total}
     status = Column(String, default="PENDING_VERIFICATION")
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     milestone = relationship("Milestone", back_populates="claims")
     proofs = relationship("Proof", back_populates="claim", cascade="all, delete-orphan")
@@ -79,7 +79,7 @@ class Proof(Base):
     confirmed_value = Column(Float, default=0.0)
     gps_lat = Column(Float, default=12.9716)
     gps_lng = Column(Float, default=77.5946)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     claim = relationship("Claim", back_populates="proofs")
 
@@ -102,7 +102,7 @@ class LedgerTransaction(Base):
     flag_reasons = Column(JSON, default=list)
     paypal_payout_id = Column(String, nullable=True)
     paypal_batch_status = Column(String, nullable=True)  # SUCCESS, UNCLAIMED, HELD
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     claim = relationship("Claim", back_populates="ledger_entries")
 
@@ -115,7 +115,7 @@ class AgentThoughtLog(Base):
     step_index = Column(Integer, default=0)
     log_type = Column(String, default="THINK")  # THINK, ALERT, DECIDE, ACTION
     message = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 
 # ==============================================================================

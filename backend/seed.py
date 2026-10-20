@@ -4,7 +4,7 @@ from pathlib import Path
 # Add backend to sys.path
 sys.path.append(str(Path(__file__).resolve().parent))
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from app.models.database import SessionLocal, init_db
 from app.models.schemas import (
     Campaign, Milestone, Claim, Proof, LedgerTransaction, AgentThoughtLog
@@ -41,7 +41,7 @@ def run_seed():
             protected_fraud_amount=600.0,
             status="ACTIVE",
             image_url="https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80",
-            created_at=datetime.utcnow() - timedelta(days=5)
+            created_at=datetime.now(timezone.utc) - timedelta(days=5)
         )
         db.add(c1)
 
@@ -53,7 +53,7 @@ def run_seed():
             vendor_name="QuickSupplies Relief Logistics Ltd",
             vendor_paypal_email="quicksupplies-vendor@example.com",
             status="FLAGGED",
-            created_at=datetime.utcnow() - timedelta(days=2)
+            created_at=datetime.now(timezone.utc) - timedelta(days=2)
         )
         db.add(m1)
 
@@ -70,7 +70,7 @@ def run_seed():
                 {"item_description": "High Thermal Winter Blanket", "quantity": 25.0, "unit_price": 15.00, "total_price": 375.0}
             ],
             status="FLAGGED",
-            created_at=datetime.utcnow() - timedelta(days=1)
+            created_at=datetime.now(timezone.utc) - timedelta(days=1)
         )
         db.add(cl1)
 
@@ -88,7 +88,7 @@ def run_seed():
             confirmed_value=625.0,
             gps_lat=12.9716,
             gps_lng=77.5946,
-            created_at=datetime.utcnow() - timedelta(hours=14)
+            created_at=datetime.now(timezone.utc) - timedelta(hours=14)
         )
         db.add(p1)
 
@@ -107,7 +107,7 @@ def run_seed():
             ai_summary="HALTED: Total $600.00 unauthorized diversion. Rice marked up +56.3% above WFP baseline ($12.50 vs $8.00); 25 blankets invoiced ($375) not delivered.",
             flag_reasons=["Rice unit rate +56.3% markup vs WFP median", "25 winter blankets missing from beneficiary delivery"],
             paypal_batch_status="HELD",
-            created_at=datetime.utcnow() - timedelta(hours=12)
+            created_at=datetime.now(timezone.utc) - timedelta(hours=12)
         )
         db.add(tx1)
 
@@ -125,7 +125,7 @@ def run_seed():
             protected_fraud_amount=0.0,
             status="ACTIVE",
             image_url="https://images.unsplash.com/photo-1541888946425-d0fbb186f5f7?auto=format&fit=crop&w=800&q=80",
-            created_at=datetime.utcnow() - timedelta(days=8)
+            created_at=datetime.now(timezone.utc) - timedelta(days=8)
         )
         db.add(c2)
 
@@ -137,7 +137,7 @@ def run_seed():
             vendor_name="HydroSys Water Engineering Ltd",
             vendor_paypal_email="hydrosys-vendor@example.com",
             status="RECONCILED",
-            created_at=datetime.utcnow() - timedelta(days=4)
+            created_at=datetime.now(timezone.utc) - timedelta(days=4)
         )
         db.add(m2)
 
@@ -154,7 +154,7 @@ def run_seed():
                 {"item_description": "High-Pressure PVC Well Piping Kit (100m)", "quantity": 1.0, "unit_price": 400.0, "total_price": 400.0}
             ],
             status="RECONCILED",
-            created_at=datetime.utcnow() - timedelta(days=3)
+            created_at=datetime.now(timezone.utc) - timedelta(days=3)
         )
         db.add(cl2)
 
@@ -173,7 +173,7 @@ def run_seed():
             confirmed_value=1200.0,
             gps_lat=12.9800,
             gps_lng=77.6000,
-            created_at=datetime.utcnow() - timedelta(days=2)
+            created_at=datetime.now(timezone.utc) - timedelta(days=2)
         )
         db.add(p2)
 
@@ -193,7 +193,7 @@ def run_seed():
             flag_reasons=[],
             paypal_payout_id="GP-PAYOUT-7892AF12",
             paypal_batch_status="SUCCESS",
-            created_at=datetime.utcnow() - timedelta(days=2)
+            created_at=datetime.now(timezone.utc) - timedelta(days=2)
         )
         db.add(tx2)
 
@@ -211,7 +211,7 @@ def run_seed():
             protected_fraud_amount=0.0,
             status="ACTIVE",
             image_url="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80",
-            created_at=datetime.utcnow() - timedelta(days=10)
+            created_at=datetime.now(timezone.utc) - timedelta(days=10)
         )
         db.add(c3)
 
@@ -223,7 +223,7 @@ def run_seed():
             vendor_name="TechEdu Innovations Supply Co",
             vendor_paypal_email="techedu-vendor@example.com",
             status="PENDING_CLAIM",
-            created_at=datetime.utcnow() - timedelta(days=3)
+            created_at=datetime.now(timezone.utc) - timedelta(days=3)
         )
         db.add(m3)
 
@@ -239,7 +239,7 @@ def run_seed():
                 {"item_description": "Education-Grade Chromebook Laptop (11.6\")", "quantity": 10.0, "unit_price": 300.0, "total_price": 3000.0}
             ],
             status="PENDING_VERIFICATION",
-            created_at=datetime.utcnow() - timedelta(hours=6)
+            created_at=datetime.now(timezone.utc) - timedelta(hours=6)
         )
         db.add(cl3)
 
@@ -258,7 +258,7 @@ def run_seed():
             ai_summary="Milestone awaiting field beneficiary OTP sign-off. Payout held in escrow.",
             flag_reasons=["Awaiting Beneficiary OTP verification"],
             paypal_batch_status="HELD",
-            created_at=datetime.utcnow() - timedelta(hours=5)
+            created_at=datetime.now(timezone.utc) - timedelta(hours=5)
         )
         db.add(tx3)
 
