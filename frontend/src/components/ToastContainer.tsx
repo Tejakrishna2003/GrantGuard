@@ -3,7 +3,7 @@ import { CheckCircle, AlertTriangle, X, Send } from 'lucide-react';
 
 export interface ToastNotification {
   id: string;
-  type: 'PAYPAL_PAYOUT' | 'FRAUD_HALT' | 'INFO';
+  type: 'PAYPAL_PAYOUT' | 'FRAUD_HALT' | 'INFO' | 'ERROR';
   title: string;
   message: string;
   batchId?: string;
@@ -22,7 +22,7 @@ export const ToastContainer: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
     <div className="fixed bottom-5 right-5 z-50 flex flex-col space-y-2.5 max-w-sm w-full pointer-events-none">
       {toasts.map((toast) => {
         const isPayout = toast.type === 'PAYPAL_PAYOUT';
-        const isHalt = toast.type === 'FRAUD_HALT';
+        const isHalt = toast.type === 'FRAUD_HALT' || toast.type === 'ERROR';
 
         return (
           <div

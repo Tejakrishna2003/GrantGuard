@@ -130,7 +130,38 @@ export const MasterDetailDrawer: React.FC<MasterDetailDrawerProps> = ({
               </span>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {loading ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 animate-pulse">
+                {/* Skeleton Card 1 - Invoice */}
+                <div className="bg-slate-50/70 p-5 rounded-2xl border border-slate-200 space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                    <div className="h-4 w-40 bg-slate-200 rounded" />
+                    <div className="h-4 w-24 bg-slate-200 rounded" />
+                  </div>
+                  <div className="space-y-2.5">
+                    <div className="h-8 bg-slate-200 rounded-lg" />
+                    <div className="h-6 bg-slate-100 rounded" />
+                    <div className="h-6 bg-slate-100 rounded" />
+                    <div className="h-6 bg-slate-100 rounded" />
+                  </div>
+                  <div className="h-4 w-52 bg-slate-200 rounded pt-2" />
+                </div>
+
+                {/* Skeleton Card 2 - Delivery Proof */}
+                <div className="bg-slate-50/70 p-5 rounded-2xl border border-slate-200 space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                    <div className="h-4 w-40 bg-slate-200 rounded" />
+                    <div className="h-5 w-28 bg-slate-200 rounded-full" />
+                  </div>
+                  <div className="h-40 bg-slate-200 rounded-xl" />
+                  <div className="space-y-2">
+                    <div className="h-4 bg-slate-200 rounded w-3/4" />
+                    <div className="h-4 bg-slate-200 rounded w-1/2" />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {/* LEFT COLUMN: Contractor Invoice Details */}
               <div className="bg-slate-50/70 p-4 rounded-2xl border border-slate-200 flex flex-col justify-between">
                 <div>
@@ -240,6 +271,7 @@ export const MasterDetailDrawer: React.FC<MasterDetailDrawerProps> = ({
                 </div>
               </div>
             </div>
+            )}
           </div>
         </div>
 

@@ -28,7 +28,12 @@ class AgentBrain:
         Executes the 5-step autonomous reconciliation loop.
         Yields Server-Sent Events (SSE) formatted strings to the frontend.
         """
-        active_tolerance = tolerance_pct if tolerance_pct is not None else settings.DEFAULT_TOLERANCE_PERCENT
+        # Server-side hard cap: tolerance cannot exceed crisis threshold (default 35%)
+        raw_tolerance = tolerance_pct if tolerance_pct is not None else settings.DEFAULT_TOLERANCE_PERCENT
+        try:
+            active_tolerance = max(0.0, min(float(raw_tolerance), float(settings.CRISIS_TOLERANCE_PERCENT)))
+        except (ValueError, TypeError):
+            active_tolerance = settings.DEFAULT_TOLERANCE_PERCENT
         claim = db.query(Claim).filter(Claim.id == claim_id).first()
         if not claim:
             yield f"data: {json.dumps({'type': 'ERROR', 'message': f'Claim {claim_id} not found'})}\n\n"
@@ -156,7 +161,6 @@ class AgentBrain:
             milestone.status = "PENDING_CLAIM"
             claim.status = "PENDING_VERIFICATION"
             db.commit()
-            db.commit()
 
             yield await emit(5, "ACTION", f"Committed transaction {tx_id} to AG Grid as PENDING. Milestone frozen in escrow.")
             yield f"data: {json.dumps({'type': 'COMPLETE', 'status': 'PENDING', 'tx_id': tx_id})}\n\n"
@@ -269,7 +273,27 @@ class AgentBrain:
                 claim_id=claim.id
             )
 
+            payout_status = payout_res.get("status", "SIMULATED")
             payout_id = payout_res.get("batch_id", f"PAY-{uuid.uuid4().hex[:6].upper()}")
+            payout_mode = payout_res.get("mode", "PAYPAL_SANDBOX_SIMULATION")
+
+            if payout_status == "FAILED":
+                # Honest reporting: PayPal API rejected or encountered error
+                err_detail = payout_res.get("error", "PayPal API call rejected request.")
+                yield await emit(5, "ALERT", f"PAYPAL PAYOUT FAILED: {err_detail}. Escrow funds held pending manual retry.")
+                
+                milestone.status = "IN_REVIEW"
+                claim.status = "IN_REVIEW"
+                
+                existing_tx = db.query(LedgerTransaction).filter(LedgerTransaction.claim_id == claim.id).first()
+                if existing_tx:
+                    existing_tx.status = "FLAGGED"
+                    existing_tx.paypal_batch_status = "FAILED"
+                    existing_tx.ai_summary = f"RECONCILIATION PASSED, BUT PAYPAL PAYOUT FAILED: {err_detail}"
+                db.commit()
+                yield f"data: {json.dumps({'type': 'COMPLETE', 'status': 'FAILED', 'error': err_detail})}\n\n"
+                return
+
             was_already_reconciled = (claim.status == "RECONCILED")
             milestone.status = "RECONCILED"
             claim.status = "RECONCILED"
@@ -277,7 +301,8 @@ class AgentBrain:
                 campaign.disbursed_amount += total_invoiced
                 db.commit()
 
-            # Record or update Ledger Entry as RECONCILED
+            # Record or update Ledger Entry as RECONCILED with truthful batch status
+            batch_status_label = "LIVE_SUCCESS" if payout_status == "LIVE_SUCCESS" else "SIMULATED"
             existing_tx = db.query(LedgerTransaction).filter(LedgerTransaction.claim_id == claim.id).first()
             if existing_tx:
                 ledger_entry = existing_tx
@@ -291,7 +316,7 @@ class AgentBrain:
                 ledger_entry.ai_summary = ai_summary
                 ledger_entry.flag_reasons = []
                 ledger_entry.paypal_payout_id = payout_id
-                ledger_entry.paypal_batch_status = "SUCCESS"
+                ledger_entry.paypal_batch_status = batch_status_label
             else:
                 ledger_entry = LedgerTransaction(
                     id=tx_id,
@@ -308,13 +333,18 @@ class AgentBrain:
                     ai_summary=ai_summary,
                     flag_reasons=[],
                     paypal_payout_id=payout_id,
-                    paypal_batch_status="SUCCESS",
+                    paypal_batch_status=batch_status_label,
                     created_at=datetime.now(timezone.utc)
                 )
                 db.add(ledger_entry)
             db.commit()
 
-            yield await emit(5, "ACTION", f"Autonomous PayPal Payout executed (Batch: {payout_id}). Funds released to {claim.vendor_paypal_email}. AG Grid updated to RECONCILED.")
-            yield f"data: {json.dumps({'type': 'COMPLETE', 'status': 'RECONCILED', 'tx_id': tx_id, 'payout_id': payout_id})}\n\n"
+            action_desc = (
+                f"Live PayPal Sandbox Payout confirmed (Batch: {payout_id})."
+                if payout_status == "LIVE_SUCCESS"
+                else f"Autonomous Payout simulated (Demo Mode Batch: {payout_id})."
+            )
+            yield await emit(5, "ACTION", f"{action_desc} Funds released to {claim.vendor_paypal_email}. AG Grid updated to RECONCILED.")
+            yield f"data: {json.dumps({'type': 'COMPLETE', 'status': 'RECONCILED', 'tx_id': tx_id, 'payout_id': payout_id, 'payout_mode': payout_mode, 'payout_status': batch_status_label})}\n\n"
 
 agent_brain = AgentBrain()

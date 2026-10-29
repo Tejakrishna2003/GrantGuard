@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.core.config import settings, UPLOAD_DIR
@@ -68,7 +68,13 @@ def system_status():
 def reset_database():
     """
     One-click reset of SQLite database to standard pre-seeded demo state.
+    Gated to DEMO_MODE to prevent unauthorized database resets.
     """
+    if not settings.DEMO_MODE:
+        raise HTTPException(
+            status_code=403,
+            detail="Database reset is restricted and only permitted in DEMO_MODE."
+        )
     try:
         run_seed()
         return {"success": True, "message": "Database successfully reset to initial demo state."}

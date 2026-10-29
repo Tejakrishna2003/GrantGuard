@@ -6,12 +6,16 @@ interface AgentReasoningBoxProps {
   logs: AgentThought[];
   isStreaming: boolean;
   activeClaimId?: string;
+  toleranceMode?: 'NORMAL' | 'CRISIS';
+  onToggleTolerance?: () => void;
 }
 
 export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
   logs,
   isStreaming,
-  activeClaimId
+  activeClaimId,
+  toleranceMode = 'NORMAL',
+  onToggleTolerance
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -72,6 +76,21 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
+          {onToggleTolerance && (
+            <button
+              onClick={onToggleTolerance}
+              disabled={isStreaming}
+              className={`text-xs px-2.5 py-1 rounded-lg font-bold border transition-all ${
+                toleranceMode === 'CRISIS'
+                  ? 'bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+              }`}
+              title="Toggle between standard 10% and crisis 35% inflation tolerance rule"
+            >
+              Policy: {toleranceMode === 'CRISIS' ? '🚨 Crisis (35%)' : '🛡️ Standard (10%)'}
+            </button>
+          )}
+
           {isStreaming ? (
             <span className="inline-flex items-center space-x-2 text-xs text-sky-800 font-mono font-bold px-3 py-1 rounded-full bg-sky-50 border border-sky-200">
               <span className="relative flex h-2.5 w-2.5">
@@ -159,7 +178,9 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
             <Cpu className="w-4 h-4" />
             <span className="text-xs font-bold uppercase tracking-wider">4. Discrepancy Gate</span>
           </div>
-          <span className="text-xs block opacity-90 font-medium">&lt;15% Tolerance Rule</span>
+          <span className="text-xs block opacity-90 font-medium">
+            {toleranceMode === 'CRISIS' ? '≤35% Crisis Policy' : '≤10% Tolerance Rule'}
+          </span>
         </div>
 
         {/* Stage 5 */}

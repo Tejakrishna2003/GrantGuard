@@ -114,19 +114,28 @@ export const App: React.FC = () => {
           eventSource.close();
           loadData(); // refresh AG Grid and KPIs
 
-          // Trigger toast notification
+          // Trigger toast notification with honest payment status
           if (data.status === 'RECONCILED') {
+            const isLive = data.payout_status === 'LIVE_SUCCESS';
             addToast({
               type: 'PAYPAL_PAYOUT',
-              title: 'Autonomous PayPal Payout Executed',
-              message: `Milestone verified 100%. Payout batch released.`,
-              batchId: data.payout_id || 'GP-PAYOUT-8902B1'
+              title: isLive ? 'Live PayPal Sandbox Payout Executed' : 'Autonomous Payout Simulated (Demo Mode)',
+              message: isLive
+                ? `Milestone verified 100%. Funds sent via PayPal Sandbox REST API.`
+                : `Milestone verified 100%. Payout batch processed in simulated escrow.`,
+              batchId: data.payout_id || 'GP-PAYOUT-DEMO'
             });
           } else if (data.status === 'FLAGGED') {
             addToast({
               type: 'FRAUD_HALT',
               title: 'Payout Halted & Capital Frozen',
               message: `AI detected price inflation or short delivery. Protected $${data.protected || 600} in escrow.`
+            });
+          } else if (data.status === 'FAILED') {
+            addToast({
+              type: 'ERROR',
+              title: 'PayPal Payout Call Failed',
+              message: data.error || 'The PayPal Sandbox API rejected the payout request.'
             });
           }
         } else {
@@ -171,6 +180,8 @@ export const App: React.FC = () => {
         onRefresh={loadData}
         onTriggerScenario={triggerAgentReconciliation}
         isStreaming={isStreaming}
+        isResetting={isResetting}
+        onResetDatabase={handleResetDatabase}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -185,6 +196,8 @@ export const App: React.FC = () => {
           logs={agentLogs}
           isStreaming={isStreaming}
           activeClaimId={activeClaimId}
+          toleranceMode={toleranceMode}
+          onToggleTolerance={() => setToleranceMode((prev) => (prev === 'NORMAL' ? 'CRISIS' : 'NORMAL'))}
         />
 
         {/* View Switcher: Campaigns vs AG Grid Ledger */}

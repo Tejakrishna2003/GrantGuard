@@ -34,12 +34,26 @@ async def submit_vendor_claim(
     if not milestone:
         raise HTTPException(status_code=404, detail="Milestone not found")
 
+    ALLOWED_EXTENSIONS = {".png", ".jpg", ".jpeg", ".pdf", ".webp"}
+    MAX_FILE_BYTES = 10 * 1024 * 1024  # 10 MB
+
     file_url = None
     if invoice_file and invoice_file.filename:
-        safe_filename = f"{uuid.uuid4().hex[:8]}_{invoice_file.filename}"
+        ext = os.path.splitext(invoice_file.filename)[1].lower()
+        if ext not in ALLOWED_EXTENSIONS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unsupported file format '{ext}'. Allowed: PNG, JPG, JPEG, PDF, WEBP."
+            )
+        content = await invoice_file.read()
+        if len(content) > MAX_FILE_BYTES:
+            raise HTTPException(
+                status_code=400,
+                detail="Invoice file size exceeds 10MB limit."
+            )
+        safe_filename = f"{uuid.uuid4().hex[:8]}_{os.path.basename(invoice_file.filename)}"
         dest_path = UPLOAD_DIR / safe_filename
         with open(dest_path, "wb") as buffer:
-            content = await invoice_file.read()
             buffer.write(content)
         file_url = str(dest_path)
 

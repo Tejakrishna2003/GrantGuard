@@ -16,7 +16,7 @@ Over **$40 Billion** is donated annually to disaster relief, mutual aid funds, a
 
 ## 🚀 The Solution: 4-Way Cross-Reconciliation AI Agent
 
-**GrantPool AI** is an autonomous financial escrow agent that ensures community grant capital only moves when delivery is cryptographically verified:
+**GrantPool AI** is an autonomous financial escrow agent that ensures community grant capital only moves when delivery and fair market pricing are verified via Dual-Factor Ground Truth (SMS OTP + Geotagged Proof):
 
 ```
 [Community Donor]  ───(PayPal Donations SDK)───►  [GrantPool Capital Escrow]
@@ -129,9 +129,10 @@ Built using **AG Grid React Community (100% Open-Source & License-Free)**:
 | **Data Ledger** | **AG Grid React Community** | Real-time audited financial surveillance dashboard |
 | **Backend** | FastAPI (Python 3.12) + SQLAlchemy + SQLite | High-performance asynchronous API |
 | **AI Model** | Google Gemini 2.0 Flash Vision | Deterministic multimodal OCR and structured line-item extraction |
-| **Market Data** | UN World Food Programme (WFP) & HDX Catalog | Real-time commodity benchmark pricing |
-| **Payment Rail** | PayPal Sandbox (Donations & Payouts REST APIs) | Inbound pooling + automated disbursement |
-| **Proof Gateway** | Twilio Verify API + Instant Demo Bypass | Cryptographic OTP delivery confirmation |
+| **Market Data** | UN World Food Programme (WFP) & HDX Catalog | Emergency commodity benchmark reference baselines |
+| **Payment Rail** | PayPal Sandbox (Orders & Payouts REST APIs) | Inbound pooling + automated milestone disbursement (Live & Simulated) |
+| **Proof Gateway** | Twilio Verify API + Field Geotag Verification | Dual-Factor SMS OTP & on-site delivery confirmation |
+| **Test Suite** | Pytest + Pytest-Asyncio | 6 core automated backend tests (fraud catch, clean payout, policy hard-caps) |
 
 ---
 

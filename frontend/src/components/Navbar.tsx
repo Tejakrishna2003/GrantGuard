@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, RefreshCw, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { ShieldCheck, RefreshCw, AlertTriangle, CheckCircle, Clock, RotateCcw } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: string;
@@ -7,6 +7,8 @@ interface NavbarProps {
   onRefresh: () => void;
   onTriggerScenario: (claimId: string) => void;
   isStreaming: boolean;
+  isResetting?: boolean;
+  onResetDatabase?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -15,6 +17,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onRefresh,
   onTriggerScenario,
   isStreaming,
+  isResetting = false,
+  onResetDatabase,
 }) => {
   return (
     <header className="border-b border-slate-200 bg-white sticky top-0 z-40 transition-all shadow-xs">
@@ -97,6 +101,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Ledger
               </button>
             </nav>
+
+            {onResetDatabase && (
+              <button
+                onClick={onResetDatabase}
+                disabled={isResetting || isStreaming}
+                className="px-2.5 py-1.5 rounded-xl bg-white hover:bg-rose-50 text-slate-700 hover:text-rose-700 transition-all border border-slate-200 hover:border-rose-200 shadow-xs text-xs font-bold flex items-center space-x-1.5 active:scale-95 disabled:opacity-60"
+                title="Reset database to clean 3 initial hackathon test scenarios"
+              >
+                <RotateCcw className={`w-3.5 h-3.5 ${isResetting ? 'animate-spin text-rose-600' : 'text-slate-500'}`} />
+                <span className="hidden md:inline">{isResetting ? 'Resetting...' : 'Reset Demo'}</span>
+              </button>
+            )}
 
             <button
               onClick={onRefresh}

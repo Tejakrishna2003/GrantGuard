@@ -111,13 +111,13 @@ class PayPalAgentService:
                 "success": True,
                 "batch_id": batch_id,
                 "payout_item_id": item_id,
-                "status": "SUCCESS",
+                "status": "SIMULATED",
                 "recipient_email": recipient_email,
                 "amount": amount,
                 "currency": "USD",
                 "note": note,
                 "claim_id": claim_id,
-                "mode": "PAYPAL_SANDBOX_AGENT_RELEASE",
+                "mode": "PAYPAL_SANDBOX_SIMULATION",
                 "timestamp": datetime.now(timezone.utc).isoformat()
             }
 
@@ -155,30 +155,34 @@ class PayPalAgentService:
                     return {
                         "success": True,
                         "batch_id": header.get("payout_batch_id", batch_id),
-                        "status": header.get("batch_status", "SUCCESS"),
+                        "status": "LIVE_SUCCESS",
                         "recipient_email": recipient_email,
                         "amount": amount,
                         "mode": "PAYPAL_SANDBOX_REST_LIVE"
                     }
                 else:
-                    logger.warning(f"PayPal Payouts returned {res.status_code}: {res.text}. Using sandbox simulation fallback.")
+                    err_msg = f"PayPal Payouts returned HTTP {res.status_code}: {res.text}"
+                    logger.error(err_msg)
                     return {
-                        "success": True,
+                        "success": False,
                         "batch_id": batch_id,
-                        "status": "SUCCESS",
+                        "status": "FAILED",
+                        "error": err_msg,
                         "recipient_email": recipient_email,
                         "amount": amount,
-                        "mode": "PAYPAL_SANDBOX_SIMULATION"
+                        "mode": "PAYPAL_API_ERROR"
                     }
         except Exception as e:
-            logger.error(f"PayPal payout request failed: {e}")
+            err_msg = f"PayPal payout network exception: {e}"
+            logger.error(err_msg)
             return {
-                "success": True,
+                "success": False,
                 "batch_id": batch_id,
-                "status": "SUCCESS",
+                "status": "FAILED",
+                "error": err_msg,
                 "recipient_email": recipient_email,
                 "amount": amount,
-                "mode": "PAYPAL_SANDBOX_SIMULATION"
+                "mode": "PAYPAL_EXCEPTION"
             }
 
 paypal_agent_service = PayPalAgentService()

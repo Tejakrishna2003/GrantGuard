@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef, RowClassRules } from 'ag-grid-community';
-import { Download, Search, Eye, AlertOctagon, Filter, ShieldCheck, CheckCircle, Clock, Sparkles } from 'lucide-react';
+import { Download, Search, Eye, ShieldCheck, Clock, Sparkles } from 'lucide-react';
 import { LedgerTransaction } from '../lib/types';
 import { api } from '../lib/api';
 
@@ -202,16 +202,58 @@ export const AuditedLedgerGrid: React.FC<AuditedLedgerGridProps> = ({
       enableCellChangeFlash: true
     },
     {
-      headerName: 'PayPal Batch',
+      headerName: 'PayPal Settlement',
       field: 'paypal_payout_id',
-      width: 155,
-      cellRenderer: (p: any) => (
-        <span className={`font-mono text-xs font-bold ${
-          p.data.status === 'FLAGGED' ? 'text-rose-700' : p.value ? 'text-emerald-700' : 'text-slate-500'
-        }`}>
-          {p.value || (p.data.status === 'FLAGGED' ? 'FROZEN_ESCROW' : 'HELD_PENDING')}
-        </span>
-      )
+      width: 175,
+      cellRenderer: (p: any) => {
+        if (p.data.status === 'FLAGGED') {
+          return (
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-bold bg-rose-50 text-rose-800 border border-rose-200">
+              FROZEN_ESCROW
+            </span>
+          );
+        }
+        if (p.data.paypal_batch_status === 'LIVE_SUCCESS') {
+          return (
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200" title={`PayPal Live Batch: ${p.value}`}>
+              🟢 LIVE: {p.value ? p.value.slice(0, 10) + '...' : 'BATCH'}
+            </span>
+          );
+        }
+        if (p.data.paypal_batch_status === 'SIMULATED' || p.value) {
+          return (
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-bold bg-sky-50 text-sky-800 border border-sky-200" title={`Simulated Sandbox Payout: ${p.value}`}>
+              🔵 SIM: {p.value ? p.value.slice(0, 10) + '...' : 'DEMO'}
+            </span>
+          );
+        }
+        if (p.data.paypal_batch_status === 'FAILED') {
+          return (
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-bold bg-rose-50 text-rose-800 border border-rose-200">
+              🔴 FAILED
+            </span>
+          );
+        }
+        return (
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-bold bg-slate-100 text-slate-600 border border-slate-200">
+            HELD_PENDING
+          </span>
+        );
+      }
+    },
+    {
+      headerName: 'Audited At',
+      field: 'created_at',
+      width: 130,
+      cellRenderer: (p: any) => {
+        if (!p.value) return <span className="text-slate-400 font-mono text-xs">—</span>;
+        const d = new Date(p.value);
+        return (
+          <span className="font-mono text-xs text-slate-600 font-medium">
+            {d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+          </span>
+        );
+      }
     },
     {
       headerName: 'Actions',

@@ -192,7 +192,7 @@ def run_seed():
             ai_summary="100% RECONCILED: Billed $1,200.00 matches WFP benchmarks and verified beneficiary delivery. Payout auto-released via PayPal Agent Toolkit.",
             flag_reasons=[],
             paypal_payout_id="GP-PAYOUT-7892AF12",
-            paypal_batch_status="SUCCESS",
+            paypal_batch_status="SIMULATED",
             created_at=datetime.now(timezone.utc) - timedelta(days=2)
         )
         db.add(tx2)
