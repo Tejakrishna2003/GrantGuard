@@ -213,8 +213,7 @@ grantpool-agent/
 │   └── vite.config.ts         # Vite bundler configuration
 ├── docs/
 │   ├── DEVPOST_NARRATIVE.md   # Official Devpost submission text
-│   ├── JUDGE_QUICKSTART.md    # 60-second judge evaluation guide
-│   └── VIDEO_PITCH_SCRIPT.md  # 2:40 video recording script
+│   └── JUDGE_QUICKSTART.md    # 60-second judge evaluation guide
 ├── PROJECT_OVERVIEW.md        # Comprehensive technical architecture document
 ├── LICENSE                    # MIT License
 └── render.yaml                # Cloud deployment blueprint
