@@ -99,6 +99,15 @@ class AgentBrain:
         market_ref_total = val_result["total_market_ref"]
         inflation_flags = val_result["flags"]
         overall_inflation_pct = val_result["overall_inflation_pct"]
+        unbenchmarked = val_result.get("unbenchmarked_items", [])
+
+        if unbenchmarked:
+            yield await emit(
+                2,
+                "THINK",
+                f"Note: {len(unbenchmarked)} line item(s) have no direct WFP staple benchmark; flagged for secondary auditor verification."
+            )
+            await asyncio.sleep(0.4)
 
         if val_result["has_inflation"]:
             for flag in inflation_flags:

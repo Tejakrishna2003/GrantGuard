@@ -60,7 +60,8 @@ def verify_proof_submission(payload: ProofVerificationRequest, db: Session = Dep
     # Verify code
     verify_res = twilio_service.verify_otp(payload.beneficiary_phone, payload.otp_code)
     if not verify_res.get("success"):
-        raise HTTPException(status_code=400, detail="Invalid OTP code. Please enter the valid 6-digit code.")
+        err_msg = verify_res.get("error") or "Invalid OTP code. Please enter the valid 6-digit code."
+        raise HTTPException(status_code=400, detail=err_msg)
 
     # Record or update proof in DB
     existing_proof = db.query(Proof).filter(Proof.claim_id == payload.claim_id).first()

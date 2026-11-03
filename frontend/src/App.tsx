@@ -180,6 +180,7 @@ export const App: React.FC = () => {
         onRefresh={loadData}
         onTriggerScenario={triggerAgentReconciliation}
         isStreaming={isStreaming}
+        activeClaimId={activeClaimId}
         isResetting={isResetting}
         onResetDatabase={handleResetDatabase}
       />

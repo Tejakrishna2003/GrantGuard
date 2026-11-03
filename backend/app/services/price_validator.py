@@ -58,6 +58,7 @@ class PriceValidator:
         total_billed = 0.0
         total_market_ref = 0.0
         inflation_flags = []
+        unbenchmarked_items = []
 
         for item in line_items:
             desc = item.get("item_description", "")
@@ -88,8 +89,15 @@ class PriceValidator:
                         "flag": "PRICE_INFLATION"
                     })
             else:
-                # If no direct benchmark found, treat billed as reference
+                # If no direct benchmark found, treat billed as reference but record as unbenchmarked
                 total_market_ref += billed_total
+                unbenchmarked_items.append({
+                    "item": desc,
+                    "billed_unit_price": billed_unit,
+                    "quantity": qty,
+                    "billed_total": billed_total,
+                    "status": "UNBENCHMARKED_SECONDARY_REVIEW"
+                })
 
         overall_inflation_pct = 0.0
         if total_market_ref > 0 and total_billed > total_market_ref:
@@ -100,7 +108,8 @@ class PriceValidator:
             "total_market_ref": round(total_market_ref, 2),
             "overall_inflation_pct": overall_inflation_pct,
             "has_inflation": len(inflation_flags) > 0,
-            "flags": inflation_flags
+            "flags": inflation_flags,
+            "unbenchmarked_items": unbenchmarked_items
         }
 
 price_validator = PriceValidator()

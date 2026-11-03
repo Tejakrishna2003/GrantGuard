@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, RefreshCw, AlertTriangle, CheckCircle, Clock, RotateCcw } from 'lucide-react';
+import { ShieldCheck, RefreshCw, AlertTriangle, CheckCircle, Clock, RotateCcw, Loader2 } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: string;
@@ -7,6 +7,7 @@ interface NavbarProps {
   onRefresh: () => void;
   onTriggerScenario: (claimId: string) => void;
   isStreaming: boolean;
+  activeClaimId?: string;
   isResetting?: boolean;
   onResetDatabase?: () => void;
 }
@@ -17,6 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onRefresh,
   onTriggerScenario,
   isStreaming,
+  activeClaimId,
   isResetting = false,
   onResetDatabase,
 }) => {
@@ -49,31 +51,55 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => onTriggerScenario('CLM-FLOOD-01')}
               disabled={isStreaming}
-              className="text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1.5 bg-white hover:bg-rose-50 text-rose-700 border border-slate-200 hover:border-rose-200 transition-all shadow-xs active:scale-95"
+              className={`text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1.5 border transition-all shadow-xs active:scale-95 ${
+                isStreaming && activeClaimId === 'CLM-FLOOD-01'
+                  ? 'bg-rose-100 text-rose-800 border-rose-300 animate-pulse'
+                  : 'bg-white hover:bg-rose-50 text-rose-700 border-slate-200 hover:border-rose-200'
+              }`}
               title="Detects 56.3% price markup and halts payout"
             >
-              <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-              <span>1. Fraud Catch</span>
+              {isStreaming && activeClaimId === 'CLM-FLOOD-01' ? (
+                <Loader2 className="w-3.5 h-3.5 text-rose-600 animate-spin" />
+              ) : (
+                <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
+              )}
+              <span>{isStreaming && activeClaimId === 'CLM-FLOOD-01' ? 'Auditing...' : '1. Fraud Catch'}</span>
             </button>
 
             <button
               onClick={() => onTriggerScenario('CLM-WATER-02')}
               disabled={isStreaming}
-              className="text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1.5 bg-white hover:bg-emerald-50 text-emerald-700 border border-slate-200 hover:border-emerald-200 transition-all shadow-xs active:scale-95"
+              className={`text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1.5 border transition-all shadow-xs active:scale-95 ${
+                isStreaming && activeClaimId === 'CLM-WATER-02'
+                  ? 'bg-emerald-100 text-emerald-800 border-emerald-300 animate-pulse'
+                  : 'bg-white hover:bg-emerald-50 text-emerald-700 border-slate-200 hover:border-emerald-200'
+              }`}
               title="Verified clean claim triggers PayPal Payout"
             >
-              <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
-              <span>2. Clean Pass</span>
+              {isStreaming && activeClaimId === 'CLM-WATER-02' ? (
+                <Loader2 className="w-3.5 h-3.5 text-emerald-600 animate-spin" />
+              ) : (
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+              )}
+              <span>{isStreaming && activeClaimId === 'CLM-WATER-02' ? 'Reconciling...' : '2. Clean Pass'}</span>
             </button>
 
             <button
               onClick={() => onTriggerScenario('CLM-TECH-03')}
               disabled={isStreaming}
-              className="text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1.5 bg-white hover:bg-amber-50 text-amber-700 border border-slate-200 hover:border-amber-200 transition-all shadow-xs active:scale-95 hidden sm:flex"
+              className={`text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1.5 border transition-all shadow-xs active:scale-95 hidden sm:flex ${
+                isStreaming && activeClaimId === 'CLM-TECH-03'
+                  ? 'bg-amber-100 text-amber-800 border-amber-300 animate-pulse'
+                  : 'bg-white hover:bg-amber-50 text-amber-700 border-slate-200 hover:border-amber-200'
+              }`}
               title="Awaiting beneficiary OTP sign-off"
             >
-              <Clock className="w-3.5 h-3.5 text-amber-600" />
-              <span>3. Pending OTP</span>
+              {isStreaming && activeClaimId === 'CLM-TECH-03' ? (
+                <Loader2 className="w-3.5 h-3.5 text-amber-600 animate-spin" />
+              ) : (
+                <Clock className="w-3.5 h-3.5 text-amber-600" />
+              )}
+              <span>{isStreaming && activeClaimId === 'CLM-TECH-03' ? 'Verifying...' : '3. Pending OTP'}</span>
             </button>
           </div>
 

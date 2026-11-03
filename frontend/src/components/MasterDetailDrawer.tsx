@@ -207,10 +207,22 @@ export const MasterDetailDrawer: React.FC<MasterDetailDrawerProps> = ({
                   </div>
                 </div>
 
-                <div className="mt-3.5 pt-2.5 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600">
-                  <span>Vendor Payout Email:</span>
-                  <span className="font-mono font-bold text-slate-900">{detailData?.claim?.vendor_paypal_email || 'vendor@example.com'}</span>
-                </div>
+                  <div className="mt-3.5 pt-2.5 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-600 gap-1.5">
+                    <span>
+                      Benchmark Baseline:{' '}
+                      <a
+                        href="https://data.humdata.org/organization/wfp"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-bold text-sky-600 hover:underline inline-flex items-center space-x-1"
+                      >
+                        <span>UN WFP / HDX 2024–2026</span>
+                      </a>
+                    </span>
+                    <span className="font-mono text-slate-700">
+                      Vendor: <strong className="text-slate-900 font-bold">{detailData?.claim?.vendor_paypal_email || 'vendor@example.com'}</strong>
+                    </span>
+                  </div>
               </div>
 
               {/* RIGHT COLUMN: Beneficiary Delivery Ground Truth */}
@@ -224,7 +236,7 @@ export const MasterDetailDrawer: React.FC<MasterDetailDrawerProps> = ({
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                       detailData?.otp_verified ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
                     }`}>
-                      {detailData?.otp_verified ? '✓ OTP Cryptographically Signed' : 'Pending OTP'}
+                      {detailData?.otp_verified ? '✓ Dual-Factor OTP Verified' : 'Pending OTP'}
                     </span>
                   </div>
 

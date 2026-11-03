@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useMemo } from 'react';
-import { Cpu, CheckCircle2, AlertTriangle, ArrowRight, Activity, ShieldAlert, Sparkles, Lock, FileSearch, Scale, Smartphone, Send } from 'lucide-react';
+import React, { useEffect, useRef, useMemo, useState } from 'react';
+import { Cpu, CheckCircle2, AlertTriangle, ArrowRight, Activity, ShieldAlert, Sparkles, Lock, FileSearch, Scale, Smartphone, Send, Copy, Check } from 'lucide-react';
 import { AgentThought } from '../lib/types';
 
 interface AgentReasoningBoxProps {
@@ -18,6 +18,18 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
   onToggleTolerance
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const [copied, setCopied] = useState<boolean>(false);
+
+  const handleCopyLogs = () => {
+    if (logs.length === 0) return;
+    const text = logs
+      .map((l) => `[${l.timestamp}] [${l.type}] ${l.message}`)
+      .join('\n');
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -76,6 +88,26 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
+          {logs.length > 0 && (
+            <button
+              onClick={handleCopyLogs}
+              className="text-xs px-2.5 py-1 rounded-lg font-bold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 flex items-center space-x-1.5 transition-all shadow-xs active:scale-95"
+              title="Copy terminal reasoning trace to clipboard"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-emerald-700">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Copy Log</span>
+                </>
+              )}
+            </button>
+          )}
+
           {onToggleTolerance && (
             <button
               onClick={onToggleTolerance}
