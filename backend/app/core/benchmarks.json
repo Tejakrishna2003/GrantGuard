@@ -1,5 +1,8 @@
 {
   "description": "UN World Food Programme (WFP) & HDX Global Emergency Commodity Reference Index (2024-2026)",
+  "source_organization": "United Nations World Food Programme (WFP) / OCHA Humanitarian Data Exchange",
+  "portal_url": "https://data.humdata.org/organization/wfp",
+  "methodology": "Median baseline derived from WFP Global Market Monitor quarterly food and non-food item (NFI) price series, normalized to USD.",
   "currency": "USD",
   "commodities": [
     {
@@ -11,7 +14,8 @@
       "median_price": 8.00,
       "min_price": 6.50,
       "max_price": 9.50,
-      "source": "WFP Market Monitor HDX-2024"
+      "source": "WFP Market Monitor HDX-2024",
+      "source_url": "https://data.humdata.org/dataset/wfp-food-prices"
     },
     {
       "sku": "staple-flour-10kg",
@@ -22,7 +26,8 @@
       "median_price": 11.50,
       "min_price": 9.50,
       "max_price": 13.00,
-      "source": "WFP Market Monitor HDX-2024"
+      "source": "WFP Market Monitor HDX-2024",
+      "source_url": "https://data.humdata.org/dataset/wfp-food-prices"
     },
     {
       "sku": "staple-cooking-oil-2l",
@@ -33,7 +38,8 @@
       "median_price": 5.20,
       "min_price": 4.50,
       "max_price": 6.00,
-      "source": "WFP Market Monitor HDX-2024"
+      "source": "WFP Market Monitor HDX-2024",
+      "source_url": "https://data.humdata.org/dataset/wfp-food-prices"
     },
     {
       "sku": "nfi-blanket-thermal",
@@ -44,7 +50,8 @@
       "median_price": 15.00,
       "min_price": 12.00,
       "max_price": 18.00,
-      "source": "UNHCR / IFRC Standard Non-Food Items"
+      "source": "UNHCR / IFRC Standard Non-Food Items",
+      "source_url": "https://itemscatalogue.redcross.int/"
     },
     {
       "sku": "nfi-tarp-tarpaulin",
@@ -55,7 +62,8 @@
       "median_price": 22.00,
       "min_price": 18.00,
       "max_price": 26.00,
-      "source": "UNHCR Emergency Shelter Standards"
+      "source": "UNHCR Emergency Shelter Standards",
+      "source_url": "https://emergency.unhcr.org/"
     },
     {
       "sku": "infra-water-pump-submersible",

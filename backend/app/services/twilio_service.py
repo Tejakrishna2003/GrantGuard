@@ -58,20 +58,22 @@ class TwilioService:
 
     def verify_otp(self, phone_number: str, code: str) -> dict:
         """
-        Verifies code. Always accepts '482910' in demo mode.
+        Verifies code. Enforces exact code match ('482910' in demo mode) to prevent arbitrary bypasses.
         """
-        if settings.DEMO_MODE or code == "482910" or not self.client or not self.service_sid:
-            is_valid = (code == "482910" or len(code) == 6)
+        cleaned_code = str(code).strip()
+        if settings.DEMO_MODE or not self.client or not self.service_sid:
+            is_valid = (cleaned_code == "482910")
             return {
                 "success": is_valid,
                 "status": "approved" if is_valid else "rejected",
-                "demo_mode": True
+                "demo_mode": True,
+                "error": None if is_valid else "Invalid OTP code. Enter demo code '482910'."
             }
 
         try:
             check = self.client.verify.v2.services(self.service_sid).verification_checks.create(
                 to=phone_number,
-                code=code
+                code=cleaned_code
             )
             return {
                 "success": (check.status == "approved"),

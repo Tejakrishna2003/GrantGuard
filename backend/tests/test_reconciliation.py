@@ -13,11 +13,21 @@ def setup_database():
     run_seed()
 
 @pytest.mark.asyncio
-async def test_clean_claim_approved_and_settled():
+async def test_clean_claim_approved_and_settled(monkeypatch):
     """
     Scenario 1: Clean claim with verified delivery and fair market price.
     Should result in RECONCILED verdict and payout execution (simulated or live).
     """
+    # Mock payout execution to ensure test reliability regardless of sandbox balance
+    async def mock_success_payout(*args, **kwargs):
+        return {
+            "success": True,
+            "status": "LIVE_SUCCESS",
+            "batch_id": "GP-PAYOUT-TEST1234",
+            "mode": "PAYPAL_SANDBOX_REST_LIVE"
+        }
+    monkeypatch.setattr(paypal_agent_service, "execute_payout", mock_success_payout)
+
     db = SessionLocal()
     try:
         events = []
@@ -119,11 +129,20 @@ async def test_tolerance_hard_cap_prevents_client_bypass():
         db.close()
 
 @pytest.mark.asyncio
-async def test_idempotent_reconciliation_no_duplicate_ledger():
+async def test_idempotent_reconciliation_no_duplicate_ledger(monkeypatch):
     """
     Audit integrity: Running reconciliation multiple times on the same claim
     must NOT duplicate ledger entries or double-count payouts.
     """
+    async def mock_success_payout(*args, **kwargs):
+        return {
+            "success": True,
+            "status": "LIVE_SUCCESS",
+            "batch_id": "GP-PAYOUT-TEST1234",
+            "mode": "PAYPAL_SANDBOX_REST_LIVE"
+        }
+    monkeypatch.setattr(paypal_agent_service, "execute_payout", mock_success_payout)
+
     db = SessionLocal()
     try:
         # Run first time

@@ -52,29 +52,49 @@ Over **$40 Billion** is donated annually to disaster relief, mutual aid funds, a
 
 ### Step 1: Clone & Configure
 ```bash
-git clone https://github.com/YOUR_USERNAME/grantpool-agent.git
+git clone https://github.com/grantpool/grantpool-agent.git
 cd grantpool-agent
 cp .env.example .env
 ```
 *(The repository is configured with `DEMO_MODE=true` by default—you do **not** need to create external API keys or register phone numbers to evaluate the complete end-to-end flow!)*
 
-### Step 2: Start Backend
+### Step 2: Start Backend (Python 3.10+)
 ```bash
 cd backend
+
+# Create & activate a clean virtual environment
+python -m venv venv
+
+# Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+# Mac / Linux:
+# source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
-python seed.py       # Seeds 3 realistic scenarios into SQLite
+
+# Run automated verification test suite (6/6 passing tests)
+pytest tests/ -v
+
+# Seed 3 realistic scenarios into SQLite
+python seed.py
+
+# Start FastAPI server
 uvicorn app.main:app --reload --port 8000
 ```
 
-### Step 3: Start Frontend
+### Step 3: Start Frontend (Node.js 18+)
 ```bash
-cd ../frontend
+# In a second terminal:
+cd frontend
 npm install
 npm run dev
 ```
 
 ### Step 4: Open in Browser
 Visit: **http://localhost:5173**
+
+*(Backend health check available at `http://localhost:8000/health`)*
 
 ---
 
