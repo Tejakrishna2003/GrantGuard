@@ -9,7 +9,7 @@
 ### [0:00 – 0:25] The Hook: The Middleman Problem
 * **Visual:** News headline collage ("Where did the $500M aid money go?", "Crowdfunding fraud claims"). Transition to GrantPool AI clean landing page.
 * **Voiceover:**
-  > *"Over $40 Billion is donated to crisis relief, mutual aid, and community funds every year. But donors rarely distrust the cause—they distrust the middlemen. Up to 30% of donated capital disappears into unauthorized contractor markups, phantom invoices, and administrative leakage before reaching the ground. Crowdfunding sites dump money into personal bank accounts with zero accountability. We built GrantPool AI to fix this permanently."*
+  > *"Over $40 Billion is donated to crisis relief, mutual aid, and community funds every year. But donors rarely distrust the cause—they distrust the middlemen. Up to 30% of donated capital can disappear into unauthorized contractor markups, phantom invoices, and administrative leakage before reaching the ground. Crowdfunding sites dump money into personal bank accounts with zero accountability. We built GrantPool AI to solve this through autonomous verification."*
 
 ---
 
@@ -54,4 +54,4 @@
 ### [2:25 – 2:40] Wrap-Up & Impact
 * **Visual:** Zoom out to show KPI cards ($11.7k pooled, $1.2k disbursed, $600 protected), GitHub MIT badge, and tech stack logos (PayPal, Gemini, AG Grid).
 * **Voiceover:**
-  > *"GrantPool AI democratizes autonomous community treasury governance for the 400 million everyday PayPal users—zero crypto wallet, zero blockchain required. 100% donor transparency. Powered by PayPal, Gemini, and AG Grid. Thank you!"*
+  > *"GrantPool AI delivers autonomous milestone financial governance for community relief programs, grassroots NGOs, and mutual-aid organizers. Fast, audited milestone payouts with zero manual overhead. Powered by PayPal, Gemini, and AG Grid. Thank you!"*
