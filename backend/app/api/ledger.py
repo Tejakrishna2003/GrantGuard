@@ -15,11 +15,23 @@ from app.services.paypal_agent_service import paypal_agent_service
 router = APIRouter(prefix="/api/ledger", tags=["ledger"])
 
 @router.get("", response_model=List[LedgerResponse])
-def get_ledger_transactions(db: Session = Depends(get_db)):
+def get_ledger_transactions(
+    skip: int = 0,
+    limit: Optional[int] = 100,
+    status: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
     """
-    Returns all audited transactions for AG Grid.
+    Returns audited transactions for AG Grid with support for pagination (skip/limit) and status filtering.
     """
-    return db.query(LedgerTransaction).order_by(LedgerTransaction.created_at.desc()).all()
+    query = db.query(LedgerTransaction).order_by(LedgerTransaction.created_at.desc())
+    if status and status.upper() != "ALL":
+        query = query.filter(LedgerTransaction.status == status.upper())
+    if skip > 0:
+        query = query.offset(skip)
+    if limit is not None and limit > 0:
+        query = query.limit(limit)
+    return query.all()
 
 @router.get("/export/csv")
 def export_ledger_csv(db: Session = Depends(get_db)):

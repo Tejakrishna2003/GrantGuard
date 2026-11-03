@@ -15,13 +15,21 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS
-origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
+# Configure CORS with strict explicit origins (Disallow unsafe wildcard '*' with credentials)
+raw_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip() and origin.strip() != "*"]
+allowed_origins = raw_origins if raw_origins else [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins if origins else ["*"],
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"https://.*\.onrender\.com|https://.*\.vercel\.app" if settings.ENVIRONMENT != "development" else None,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 

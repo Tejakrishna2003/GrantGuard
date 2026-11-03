@@ -192,3 +192,31 @@ async def test_truthful_payment_failure_reporting(monkeypatch):
         assert "401" in complete_event.get("error", "")
     finally:
         db.close()
+
+def test_ledger_pagination_and_status_filtering():
+    """
+    Scalability & Pagination: Verifies GET /api/ledger supports skip/limit pagination
+    and status filtering to handle large financial audit datasets.
+    """
+    from app.api.ledger import get_ledger_transactions
+    db = SessionLocal()
+    try:
+        # Test limit
+        page_1 = get_ledger_transactions(skip=0, limit=1, db=db)
+        assert len(page_1) == 1
+
+        # Test offset/skip
+        page_2 = get_ledger_transactions(skip=1, limit=1, db=db)
+        assert len(page_2) == 1
+        assert page_1[0].id != page_2[0].id
+
+        # Test status filtering
+        flagged = get_ledger_transactions(status="FLAGGED", db=db)
+        assert all(t.status == "FLAGGED" for t in flagged)
+        assert len(flagged) >= 1
+
+        reconciled = get_ledger_transactions(status="RECONCILED", db=db)
+        assert all(t.status == "RECONCILED" for t in reconciled)
+        assert len(reconciled) >= 1
+    finally:
+        db.close()
