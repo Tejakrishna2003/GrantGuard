@@ -8,7 +8,7 @@
 [![Payments: PayPal REST](https://img.shields.io/badge/Payment%20Rail-PayPal%20Orders%20%26%20Payouts-003087.svg)](backend/app/services/paypal_agent_service.py)
 
 > **Submission for the PayPal AI Hackathon (Devpost)**  
-> **Categories Targeted:** Best Use of Agentic Commerce ($5,000) | Most Impactful ($5,000) | Best Use of AG Grid - 1st Place ($5,000)  
+> **Categories Targeted:** Best Use of Agentic Commerce | Most Impactful | Best Use of AG Grid  
 > **Target Audience:** Small NGOs, grassroots disaster relief funds, and mutual-aid organizers who need institutional financial controls without the overhead of a dedicated forensic audit team.
 
 ---
@@ -75,8 +75,8 @@ Over **$40 Billion** is contributed annually to emergency relief, mutual aid fun
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/grantpool/grantpool-agent.git
-cd grantpool-agent
+git clone https://github.com/Tejakrishna2003/GrantGuard.git
+cd GrantGuard
 cp .env.example .env
 ```
 *(The repository is configured with `DEMO_MODE=true` by default—you do **not** need external API keys or phone numbers to evaluate the complete end-to-end flow!)*
@@ -194,7 +194,7 @@ Built using **AG Grid React Community (100% Open-Source & License-Free)**:
 ## 8. Repository Structure
 
 ```
-grantpool-agent/
+GrantGuard/
 ├── backend/
 │   ├── app/
 │   │   ├── api/               # FastAPI routers (claims, campaigns, donations, ledger, etc.)
