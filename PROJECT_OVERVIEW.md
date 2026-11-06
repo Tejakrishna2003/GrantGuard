@@ -1,7 +1,5 @@
 # GrantPool AI — Comprehensive Project Overview & Technical Architecture
 
-> **PayPal AI Hackathon Submission**  
-> **Categories Targeted:** Best Use of Agentic Commerce | Most Impactful | Best Use of AG Grid  
 > **Repository:** `GrantGuard`  
 > **License:** MIT License  
 

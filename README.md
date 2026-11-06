@@ -7,10 +7,6 @@
 [![Ledger: AG Grid](https://img.shields.io/badge/Data%20Ledger-AG%20Grid%20Community%20v31-red.svg)](frontend/src/components/AuditedLedgerGrid.tsx)
 [![Payments: PayPal REST](https://img.shields.io/badge/Payment%20Rail-PayPal%20Orders%20%26%20Payouts-003087.svg)](backend/app/services/paypal_agent_service.py)
 
-> **Submission for the PayPal AI Hackathon (Devpost)**  
-> **Categories Targeted:** Best Use of Agentic Commerce | Most Impactful | Best Use of AG Grid  
-> **Target Audience:** Small NGOs, grassroots disaster relief funds, and mutual-aid organizers who need institutional financial controls without the overhead of a dedicated forensic audit team.
-
 ---
 
 ## 📌 Table of Contents
