@@ -1,15 +1,35 @@
 # GrantPool AI — Autonomous Anti-Diversion Escrow & Audited Ledger
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
-[![Tests: 6 Passed](https://img.shields.io/badge/Pytest-6%20Passed%20(100%25)-brightgreen.svg)](backend/tests/test_reconciliation.py)
+[![Tests: 7 Passed](https://img.shields.io/badge/Pytest-7%20Passed%20(100%25)-brightgreen.svg)](backend/tests/test_reconciliation.py)
+[![Video Demo](https://img.shields.io/badge/Demo%20Video-YouTube-red.svg?logo=youtube)](https://youtu.be/YOUR_VIDEO_ID)
 [![Backend: FastAPI](https://img.shields.io/badge/Backend-FastAPI%20%7C%20Python%203.12-blue.svg)](backend/app/main.py)
 [![Frontend: React + Vite](https://img.shields.io/badge/Frontend-React%2018%20%7C%20TypeScript%20%7C%20Vite-61dafb.svg)](frontend/src/App.tsx)
 [![Ledger: AG Grid](https://img.shields.io/badge/Data%20Ledger-AG%20Grid%20Community%20v31-red.svg)](frontend/src/components/AuditedLedgerGrid.tsx)
 [![Payments: PayPal REST](https://img.shields.io/badge/Payment%20Rail-PayPal%20Orders%20%26%20Payouts-003087.svg)](backend/app/services/paypal_agent_service.py)
 
+> **Submission for the PayPal AI Hackathon (Devpost)**  
+> **Categories Targeted:** Best Use of Agentic Commerce ($5,000) | Most Impactful ($5,000) | Best Use of AG Grid - 1st Place ($5,000)  
+> **Target Audience:** Small NGOs, grassroots disaster relief funds, and mutual-aid organizers who need institutional financial controls without the overhead of a dedicated forensic audit team.
+
+---
+
+## 🎥 Video Demonstration (< 3 Minutes)
+
+> **Watch the live end-to-end walkthrough on YouTube:**  
+> 🔗 **[GrantPool AI — Official 3-Minute Video Demo (YouTube)](https://youtu.be/YOUR_VIDEO_ID)**
+
+The demonstration highlights:
+1. Inbound donation pooling into programmatic escrow via **PayPal Smart Buttons**.
+2. Autonomous 4-way cross-reconciliation with **Gemini 2.0 Flash Vision** and **UN WFP / HDX commodity price benchmarks**.
+3. The **Hero Fraud Catch**: Flagging a 56.3% rice markup + 25 missing blankets, halting payout, and freezing $600 in escrow.
+4. The **Clean Pass**: Autonomous milestone disbursement via the **PayPal Payouts REST API**.
+5. Real-time surveillance on the **AG Grid forensic ledger** with cell flashing and Master-Detail inspection drawer.
+
 ---
 
 ## 📌 Table of Contents
+- [🎥 Video Demonstration (< 3 Minutes)](#-video-demonstration--3-minutes)
 - [1. The Problem: The $40B "Middleman Black Box"](#1-the-problem-the-40b-middleman-black-box)
 - [2. The Solution: 4-Way Cross-Reconciliation](#2-the-solution-4-way-cross-reconciliation)
 - [3. 60-Second Quickstart for Evaluators](#3-60-second-quickstart-for-evaluators)
