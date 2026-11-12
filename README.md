@@ -75,8 +75,8 @@ Billions of dollars are contributed annually to emergency relief, mutual aid fun
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/grantpool/grantpool-agent.git
-cd grantpool-agent
+git clone https://github.com/Tejakrishna2003/GrantGuard.git
+cd GrantGuard
 cp .env.example .env
 ```
 *(The repository is configured with `DEMO_MODE=true` by default—you do **not** need external API keys or phone numbers to evaluate the complete end-to-end flow!)*
