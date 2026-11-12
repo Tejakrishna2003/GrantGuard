@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 [![Tests: 7 Passed](https://img.shields.io/badge/Pytest-7%20Passed%20(100%25)-brightgreen.svg)](backend/tests/test_reconciliation.py)
-[![Video Demo](https://img.shields.io/badge/Demo%20Video-YouTube-red.svg?logo=youtube)](https://youtu.be/YOUR_VIDEO_ID)
+[![Video Demo](https://img.shields.io/badge/Demo%20Video-YouTube-red.svg?logo=youtube)](https://youtu.be/_9KHHUPVwJo)
 [![Backend: FastAPI](https://img.shields.io/badge/Backend-FastAPI%20%7C%20Python%203.12-blue.svg)](backend/app/main.py)
 [![Frontend: React + Vite](https://img.shields.io/badge/Frontend-React%2018%20%7C%20TypeScript%20%7C%20Vite-61dafb.svg)](frontend/src/App.tsx)
 [![Ledger: AG Grid](https://img.shields.io/badge/Data%20Ledger-AG%20Grid%20Community%20v31-red.svg)](frontend/src/components/AuditedLedgerGrid.tsx)
@@ -16,7 +16,7 @@
 
 ## 🎥 Video Demonstration (< 3 Minutes)
 
-> 🔗 **Watch on YouTube:** **[GrantPool AI — Official 3-Minute Video Demo](https://youtu.be/YOUR_VIDEO_ID)**
+> 🔗 **Watch on YouTube:** **[GrantPool AI — Official 3-Minute Video Demo](https://youtu.be/_9KHHUPVwJo)**
 
 ---
 

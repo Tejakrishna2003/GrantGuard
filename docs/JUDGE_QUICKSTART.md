@@ -1,5 +1,7 @@
 # Evaluator & Judge Quickstart Guide (60 Seconds)
 
+> 🔗 **Official 3-Minute Video Demo:** **[https://youtu.be/_9KHHUPVwJo](https://youtu.be/_9KHHUPVwJo)**
+
 Welcome to **GrantPool AI**! This guide is designed to provide evaluators with a zero-friction, 60-second walkthrough of the complete end-to-end reconciliation pipeline.
 
 ---
@@ -21,7 +23,7 @@ python -m venv venv
 # Install dependencies:
 pip install -r requirements.txt
 
-# Run automated verification tests (6/6 passing tests):
+# Run automated verification tests (7/7 passing tests):
 pytest tests/ -v
 
 # Seed clean demo scenarios into SQLite:
