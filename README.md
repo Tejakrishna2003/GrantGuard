@@ -16,15 +16,7 @@
 
 ## 🎥 Video Demonstration (< 3 Minutes)
 
-> **Watch the live end-to-end walkthrough on YouTube:**  
-> 🔗 **[GrantPool AI — Official 3-Minute Video Demo (YouTube)](https://youtu.be/YOUR_VIDEO_ID)**
-
-The demonstration highlights:
-1. Inbound donation pooling into programmatic escrow via **PayPal Smart Buttons**.
-2. Autonomous 4-way cross-reconciliation with **Gemini 2.0 Flash Vision** and **UN WFP / HDX commodity price benchmarks**.
-3. The **Hero Fraud Catch**: Flagging a 56.3% rice markup + 25 missing blankets, halting payout, and freezing $600 in escrow.
-4. The **Clean Pass**: Autonomous milestone disbursement via the **PayPal Payouts REST API**.
-5. Real-time surveillance on the **AG Grid forensic ledger** with cell flashing and Master-Detail inspection drawer.
+> 🔗 **Watch on YouTube:** **[GrantPool AI — Official 3-Minute Video Demo](https://youtu.be/YOUR_VIDEO_ID)**
 
 ---
 
