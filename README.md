@@ -1,8 +1,7 @@
 # GrantPool AI — Autonomous Anti-Diversion Escrow & Audited Ledger
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
-[![Tests: 7 Passed](https://img.shields.io/badge/Pytest-7%20Passed%20(100%25)-brightgreen.svg)](backend/tests/test_reconciliation.py)
-[![Video Demo](https://img.shields.io/badge/Demo%20Video-YouTube-red.svg?logo=youtube)](https://youtu.be/_9KHHUPVwJo)
+[![Tests: 6 Passed](https://img.shields.io/badge/Pytest-6%20Passed%20(100%25)-brightgreen.svg)](backend/tests/test_reconciliation.py)
 [![Backend: FastAPI](https://img.shields.io/badge/Backend-FastAPI%20%7C%20Python%203.12-blue.svg)](backend/app/main.py)
 [![Frontend: React + Vite](https://img.shields.io/badge/Frontend-React%2018%20%7C%20TypeScript%20%7C%20Vite-61dafb.svg)](frontend/src/App.tsx)
 [![Ledger: AG Grid](https://img.shields.io/badge/Data%20Ledger-AG%20Grid%20Community%20v31-red.svg)](frontend/src/components/AuditedLedgerGrid.tsx)
@@ -14,15 +13,8 @@
 
 ---
 
-## 🎥 Video Demonstration (< 3 Minutes)
-
-> 🔗 **Watch on YouTube:** **[GrantPool AI — Official 3-Minute Video Demo](https://youtu.be/_9KHHUPVwJo)**
-
----
-
 ## 📌 Table of Contents
-- [🎥 Video Demonstration (< 3 Minutes)](#-video-demonstration--3-minutes)
-- [1. The Problem: The $40B "Middleman Black Box"](#1-the-problem-the-40b-middleman-black-box)
+- [1. The Problem: The Middleman Black Box](#1-the-problem-the-middleman-black-box)
 - [2. The Solution: 4-Way Cross-Reconciliation](#2-the-solution-4-way-cross-reconciliation)
 - [3. 60-Second Quickstart for Evaluators](#3-60-second-quickstart-for-evaluators)
 - [4. Automated Backend Test Suite](#4-automated-backend-test-suite)
@@ -35,11 +27,11 @@
 
 ---
 
-## 1. The Problem: The $40B "Middleman Black Box"
+## 1. The Problem: The Middleman Black Box
 
-Over **$40 Billion** is contributed annually to emergency relief, mutual aid funds, and grassroots community grants. Yet donors and community organizers frequently struggle with the **Intermediary Overhead Trap**:
+Billions of dollars are contributed annually to emergency relief, mutual aid funds, and grassroots community grants. Yet donors and community organizers frequently struggle with the **Intermediary Overhead Trap**:
 * Traditional crowdfunding platforms lump donated funds into a single personal bank account without milestone verification, spending restrictions, or delivery checks.
-* An estimated **15% to 30% of donated capital** is lost to unverified contractor price inflation, phantom delivery invoices, and administrative cuts before reaching the ground.
+* A meaningful share of donated capital can be lost to unverified contractor price inflation, phantom delivery invoices, and administrative cuts before reaching the ground.
 * Small NGOs and mutual-aid groups cannot afford expensive third-party forensic accounting teams to audit every supplier invoice against real-world delivery.
 
 ---
@@ -83,8 +75,8 @@ Over **$40 Billion** is contributed annually to emergency relief, mutual aid fun
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/Tejakrishna2003/GrantGuard.git
-cd GrantGuard
+git clone https://github.com/grantpool/grantpool-agent.git
+cd grantpool-agent
 cp .env.example .env
 ```
 *(The repository is configured with `DEMO_MODE=true` by default—you do **not** need external API keys or phone numbers to evaluate the complete end-to-end flow!)*
@@ -202,7 +194,7 @@ Built using **AG Grid React Community (100% Open-Source & License-Free)**:
 ## 8. Repository Structure
 
 ```
-GrantGuard/
+grantpool-agent/
 ├── backend/
 │   ├── app/
 │   │   ├── api/               # FastAPI routers (claims, campaigns, donations, ledger, etc.)

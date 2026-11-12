@@ -1,13 +1,15 @@
 # GrantPool AI — Comprehensive Project Overview & Technical Architecture
 
-> **Repository:** `GrantGuard`  
+> **PayPal AI Hackathon Submission**  
+> **Categories Targeted:** Best Use of Agentic Commerce ($5,000) | Most Impactful ($5,000) | Best Use of AG Grid - 1st Place ($5,000)  
+> **Repository:** `grantpool-agent`  
 > **License:** MIT License  
 
 ---
 
 ## 📌 Table of Contents
 1. [Executive Summary](#1-executive-summary)
-2. [The Core Problem: The $40B "Middleman Black Box"](#2-the-core-problem-the-40b-middleman-black-box)
+2. [The Core Problem: The Middleman Black Box](#2-the-core-problem-the-middleman-black-box)
 3. [The Core Idea & Solution](#3-the-core-idea--solution)
 4. [End-to-End System Architecture](#4-end-to-end-system-architecture)
 5. [The 6-Stage Execution Pipeline](#5-the-6-stage-execution-pipeline)
@@ -32,12 +34,12 @@ If price gouging or missing goods are detected, the agent **instantly freezes th
 
 ---
 
-## 2. The Core Problem: The $40B "Middleman Black Box"
+## 2. The Core Problem: The Middleman Black Box
 
-Every year, over **$40 Billion** is contributed to emergency relief, mutual aid funds, and community improvement projects worldwide. Despite massive generosity, donors, grantors, and community members face a systemic lack of trust:
+Every year, billions of dollars are contributed to emergency relief, mutual aid funds, and community improvement projects worldwide. Despite massive generosity, donors, grantors, and community members face a systemic lack of trust:
 
 * **The Intermediary Overhead Trap:** Traditional platforms (GoFundMe, Kickstarter, standard bank transfers) deposit 100% of collected funds into an organizer's personal bank account with zero spending controls or milestone gates.
-* **15% to 30% Capital Diversion:** A substantial fraction of relief funding is lost to unexplained contractor price inflation, phantom delivery invoices, and unauthorized administrative skimming before aid ever reaches the ground.
+* **Capital Diversion Risk:** A meaningful share of relief funding can be lost to unexplained contractor price inflation, phantom delivery invoices, and unauthorized administrative skimming before aid ever reaches the ground.
 * **Lack of Independent Ground Verification:** Donors have no way of knowing whether 100 bags of rice or 10 water filtration units were actually delivered, or if only half arrived while the full budget was billed.
 * **Audit Infeasibility for Small NGOs:** Grassroots relief organizations and mutual-aid collectives cannot afford dedicated forensic accounting teams to scrutinize every contractor receipt.
 
@@ -46,7 +48,7 @@ Every year, over **$40 Billion** is contributed to emergency relief, mutual aid 
 ## 3. The Core Idea & Solution
 
 ### The Core Hypothesis
-> *"What if community grant funds were held in a programmatic release gate, and money only moved when an AI agent mathematically verified that goods were actually delivered at fair market rates?"*
+> *"What if community grant funds were held in a programmatic release gate, and money only moved when an AI agent verified, against market benchmarks and field delivery proof, that goods were actually delivered at fair market rates?"*
 
 ### The 4-Way Cross-Reconciliation Model
 GrantPool AI connects all four participants in an aid lifecycle:
@@ -128,7 +130,7 @@ Three pre-configured scenarios can be executed instantly via quick-launcher butt
 | Scenario | Claim ID & Title | Claimed | AI Detection Findings | Final Autonomous Action | AG Grid Visual State |
 |---|---|---|---|---|---|
 | **🔴 1. Fraud Catch (Hero Demo)** | `CLM-FLOOD-01` Emergency Food Aid | $1,000 | • Rice billed @ \$12.50 vs \$8.00 WFP benchmark (**+56.3% markup**)<br>• Beneficiary confirms **25 missing blankets** | **HALT PAYOUT**<br>• $600 frozen in escrow<br>• Vendor payout blocked | Flashes Red; marked `Flagged Discrepancy` with forensic explanation |
-| **🟢 2. Clean Pass** | `CLM-WATER-02` Clean Water Well Drilling | $1,200 | • Prices match WFP benchmark<br>• Beneficiary OTP & delivery photo verified | **AUTO-APPROVED**<br>• Autonomous PayPal Payout executed | Flashes Green; marked `100% Reconciled` |
+| **🟢 2. Clean Pass** | `CLM-WATER-02` Clean Water Well Drilling | $1,200 | • Prices match WFP benchmark<br>• Beneficiary OTP & delivery photo verified | **AUTO-APPROVED**<br>• Autonomous PayPal Payout executed (live in a funded sandbox, simulated in demo mode) | Flashes Green; marked `100% Reconciled` |
 | **🟡 3. Pending Field Proof** | `CLM-TECH-03` School Literacy Drive | $3,000 | • Invoice extracted<br>• Awaiting field beneficiary OTP | **ESCROW HOLD**<br>• Funds held until field sign-off | Displayed as `Pending Beneficiary Proof` |
 
 ---
@@ -174,6 +176,7 @@ Three pre-configured scenarios can be executed instantly via quick-launcher butt
   * `VerifyProofModal.tsx`: Beneficiary SMS OTP and photo delivery interface.
   * `DisputeModal.tsx`: Human-in-the-loop community dispute override interface.
   * `ToastContainer.tsx`: Global notification toast system.
+  * `ResultsPanel.tsx`: Persistent right-hand panel that keeps one outcome card per scenario (fraud halted, payout released, payout held, awaiting field proof) until closed.
 * `frontend/src/lib/`:
   * `api.ts`: Centralized typed API client for backend communication.
   * `types.ts`: TypeScript data contracts matching backend models.
@@ -230,6 +233,7 @@ python -m venv venv
 # source venv/bin/activate
 
 pip install -r requirements.txt
+# Copy .env.example to .env (same folder your config reads it from) and keep DEMO_MODE=true
 python seed.py
 uvicorn app.main:app --reload --port 8000
 ```
