@@ -6,6 +6,7 @@ interface AgentReasoningBoxProps {
   logs: AgentThought[];
   isStreaming: boolean;
   activeClaimId?: string;
+  finalStatus?: string; // RECONCILED | FLAGGED | FAILED | other, from the stream's COMPLETE event
   toleranceMode?: 'NORMAL' | 'CRISIS';
   onToggleTolerance?: () => void;
 }
@@ -14,6 +15,7 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
   logs,
   isStreaming,
   activeClaimId,
+  finalStatus,
   toleranceMode = 'NORMAL',
   onToggleTolerance
 }) => {
@@ -40,7 +42,13 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
   // Derive pipeline step statuses from the stream logs
   const pipelineState = useMemo(() => {
     const hasLog = (substr: string) => logs.some(l => l.message.toLowerCase().includes(substr.toLowerCase()));
-    const hasAlert = (substr: string) => logs.some(l => l.type === 'ALERT' && l.message.toLowerCase().includes(substr.toLowerCase()));
+    // A failed payout API call is a payment problem, not a verification alert: keep it out of the
+    // keyword matching so words like "pending retry" don't colour Step 3 or Step 4.
+    const isPayoutFailure = (l: AgentThought) => /payout failed|payout call failed/i.test(l.message);
+    const hasAlert = (substr: string) =>
+      logs.some(l => l.type === 'ALERT' && !isPayoutFailure(l) && l.message.toLowerCase().includes(substr.toLowerCase()));
+    const payoutFailed = finalStatus === 'FAILED' || logs.some(isPayoutFailure);
+    const flagged = finalStatus === 'FLAGGED';
 
     const step1 = hasLog('ocr') || hasLog('invoice');
     const step2 = hasLog('benchmark') || hasLog('wfp') || hasLog('markup');
@@ -49,20 +57,28 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
     const step5 = hasLog('payout') || hasLog('escrow') || hasLog('frozen');
 
     const step2Alert = hasAlert('markup') || hasAlert('inflation') || hasAlert('exceed');
-    const step3Alert = hasAlert('otp') || hasAlert('pending');
-    const step4Alert = hasAlert('discrepancy') || hasAlert('halt') || hasAlert('diver');
-    const step5Halted = hasAlert('halted') || hasAlert('lock') || hasAlert('frozen') || hasLog('suppressed');
+    // Step 3 turns amber for pending OTP or a partial/short delivery
+    const step3Alert = hasAlert('otp') || hasAlert('pending') || hasAlert('missing') || hasAlert('short') || hasAlert('not delivered');
+    const step4Alert = flagged || hasAlert('discrepancy') || hasAlert('halt') || hasAlert('diver');
+    const step5Halted = flagged || hasAlert('halted') || hasAlert('lock') || hasAlert('frozen') || hasLog('suppressed');
 
     return {
       step1: step1 ? 'done' : isStreaming ? 'active' : 'idle',
       step2: step2Alert ? 'alert' : step2 ? 'done' : isStreaming && step1 ? 'active' : 'idle',
       step3: step3Alert ? 'alert' : step3 ? 'done' : isStreaming && step2 ? 'active' : 'idle',
       step4: step4Alert ? 'alert' : step4 ? 'done' : isStreaming && step3 ? 'active' : 'idle',
-      step5: step5Halted ? 'frozen' : step5 ? 'done' : isStreaming && step4 ? 'active' : 'idle',
+      step5: step5Halted ? 'frozen' : payoutFailed ? 'failed' : step5 ? 'done' : isStreaming && step4 ? 'active' : 'idle',
     };
-  }, [logs, isStreaming]);
+  }, [logs, isStreaming, finalStatus]);
 
-  const latestAlert = logs.filter(l => l.type === 'ALERT').slice(-1)[0];
+  // What the header badge says is driven by the run's real outcome, not by "any ALERT line exists"
+  type Outcome = 'fraud' | 'payout_failed' | 'success' | 'attention' | 'idle';
+  const outcome: Outcome =
+    finalStatus === 'FLAGGED' ? 'fraud'
+    : finalStatus === 'FAILED' || logs.some(l => l.type === 'ALERT' && /payout (call )?failed/i.test(l.message)) ? 'payout_failed'
+    : finalStatus === 'RECONCILED' ? 'success'
+    : logs.some(l => l.type === 'ALERT') ? 'attention'
+    : 'idle';
 
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-6">
@@ -131,10 +147,25 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
               </span>
               <span>COGNITIVE LOOP ACTIVE</span>
             </span>
-          ) : latestAlert ? (
+          ) : outcome === 'fraud' ? (
             <span className="inline-flex items-center space-x-2 text-xs text-rose-800 font-mono font-bold px-3 py-1 rounded-full bg-rose-50 border border-rose-200">
               <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
               <span>FRAUD DETECTED • CAPITAL FROZEN</span>
+            </span>
+          ) : outcome === 'payout_failed' ? (
+            <span className="inline-flex items-center space-x-2 text-xs text-amber-900 font-mono font-bold px-3 py-1 rounded-full bg-amber-50 border border-amber-300">
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+              <span>VERIFIED • PAYOUT PENDING RETRY</span>
+            </span>
+          ) : outcome === 'success' ? (
+            <span className="inline-flex items-center space-x-2 text-xs text-emerald-800 font-mono font-bold px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>100% RECONCILED • PAYOUT RELEASED</span>
+            </span>
+          ) : outcome === 'attention' ? (
+            <span className="inline-flex items-center space-x-2 text-xs text-amber-900 font-mono font-bold px-3 py-1 rounded-full bg-amber-50 border border-amber-300">
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+              <span>AWAITING FIELD PROOF • PAYOUT HELD</span>
             </span>
           ) : (
             <span className="inline-flex items-center space-x-2 text-xs text-slate-600 font-mono px-3 py-1 rounded-full bg-slate-100 border border-slate-200 font-medium">
@@ -219,6 +250,8 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
         <div className={`p-3 rounded-xl border text-center transition-all duration-300 col-span-2 sm:col-span-1 ${
           pipelineState.step5 === 'frozen'
             ? 'bg-rose-100 border-rose-400 text-rose-950 font-bold ring-2 ring-rose-200'
+            : pipelineState.step5 === 'failed'
+            ? 'bg-amber-50 border-amber-400 text-amber-950 font-bold ring-2 ring-amber-200'
             : pipelineState.step5 === 'done'
             ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-semibold'
             : pipelineState.step5 === 'active'
@@ -226,13 +259,19 @@ export const AgentReasoningBox: React.FC<AgentReasoningBoxProps> = ({
             : 'bg-slate-50 border-slate-200 text-slate-500'
         }`}>
           <div className="flex items-center justify-center space-x-1.5 mb-1">
-            {pipelineState.step5 === 'frozen' ? <Lock className="w-4 h-4 text-rose-700" /> : <Send className="w-4 h-4 text-emerald-700" />}
+            {pipelineState.step5 === 'frozen' ? <Lock className="w-4 h-4 text-rose-700" />
+              : pipelineState.step5 === 'failed' ? <AlertTriangle className="w-4 h-4 text-amber-600" />
+              : <Send className="w-4 h-4 text-emerald-700" />}
             <span className="text-xs font-bold uppercase tracking-wider">
-              {pipelineState.step5 === 'frozen' ? '5. Payout Frozen' : '5. PayPal Payout'}
+              {pipelineState.step5 === 'frozen' ? '5. Payout Frozen'
+                : pipelineState.step5 === 'failed' ? '5. Payout Retry'
+                : '5. PayPal Payout'}
             </span>
           </div>
           <span className="text-xs block opacity-90 font-medium">
-            {pipelineState.step5 === 'frozen' ? 'Capital Locked' : 'Autonomous API'}
+            {pipelineState.step5 === 'frozen' ? 'Capital Locked'
+              : pipelineState.step5 === 'failed' ? 'Funds Held in Escrow'
+              : 'Autonomous API'}
           </span>
         </div>
       </div>
